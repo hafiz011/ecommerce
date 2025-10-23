@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "43w87KrWek9+7fBPObtFJ9BI9et00hPcajyhe5n26NirkOgM9VYRSogu0G8FtfJmlQfgKedATaS/tda9Fybaig==",
+  "dgSpecHash": "pJVCHG0Qmx4=",
   "success": true,
-  "projectFilePath": "D:\\app\\ecommerce\\ecommerce.csproj",
+  "projectFilePath": "D:\\GitHub\\ecommerce\\ecommerce.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Hafiz\\.nuget\\packages\\aspnetcore.identity.mongodbcore\\6.0.0\\aspnetcore.identity.mongodbcore.6.0.0.nupkg.sha512",
     "C:\\Users\\Hafiz\\.nuget\\packages\\awssdk.core\\3.7.100.14\\awssdk.core.3.7.100.14.nupkg.sha512",

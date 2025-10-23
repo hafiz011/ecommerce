@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using System.Security.Claims;
 
 namespace ecommerce.Controllers
 {
@@ -51,6 +52,7 @@ namespace ecommerce.Controllers
             product.Id = Guid.NewGuid().ToString();
             if (product == null)
                 return BadRequest("Invalid product data.");
+            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var user = await _userManager.FindByIdAsync(product.SellerId);
             if (user == null)
                 return BadRequest("Invalid user");

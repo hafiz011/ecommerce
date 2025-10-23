@@ -1,11 +1,1 @@
-{
-  "Version": 1,
-  "Hash": "Ouo69n1j56Wx6K+KvdTP57SFK4Q/sYLANKH3ZFuuQOw=",
-  "Source": "ecommerce",
-  "BasePath": "_content/ecommerce",
-  "Mode": "Default",
-  "ManifestType": "Build",
-  "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
-}
+{"Version":1,"Hash":"7D7ckc4dccY9ePa4GO7CrFizbRzlYGJQEWpxurcmlO0=","Source":"ecommerce","BasePath":"_content/ecommerce","Mode":"Default","ManifestType":"Build","ReferencedProjectsConfiguration":[],"DiscoveryPatterns":[{"Name":"ecommerce\\wwwroot","Source":"ecommerce","ContentRoot":"D:\\GitHub\\ecommerce\\wwwroot\\","BasePath":"_content/ecommerce","Pattern":"**"}],"Assets":[],"Endpoints":[]}

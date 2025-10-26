@@ -1,4 +1,5 @@
 ﻿using ecommerce.Models;
+using ecommerce.Models.Dtos;
 using ecommerce.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,13 @@ namespace ecommerce.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IWebHostEnvironment _env;
 
-        public CategoryController(ICategoryRepository categoryRepository)
+
+        public CategoryController(ICategoryRepository categoryRepository, IWebHostEnvironment env)
         {
             _categoryRepository = categoryRepository;
+            _env = env;
         }
 
         // Get all categories
@@ -40,76 +44,110 @@ namespace ecommerce.Controllers
             return Ok(data);
         }
 
+
+
         // Add a new category
         [HttpPost]
-        public async Task<IActionResult> AddCategory([FromForm] ProductCategoryModel category)
+        public async Task<IActionResult> AddCategory([FromBody] CategoryDto category)
         {
-            if (category == null)
-                return BadRequest("Category data is required.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            category.Id = Guid.NewGuid().ToString();
+            if (category.ImageData == null || category.ImageData.Length == 0)
+                return BadRequest("Image is required.");
 
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            // Validate file size
+            if (category.ImageData.Length > 524_288)
+                return BadRequest("File size must be less than 512 KB.");
 
-            if (category.ImgUrl != null)
+            // Validate image type via simple signature or extension (optional)
+            var fileName = $"{Guid.NewGuid()}.webp"; // Force a valid extension
+            var imagesPath = Path.Combine(_env.WebRootPath, "images", "category");
+
+            try
             {
-                var extension = Path.GetExtension(category.ImgUrl.FileName).ToLowerInvariant();
-                if (!allowedExtensions.Contains(extension))
-                    return BadRequest("Only JPG, JPEG, PNG, and WEBP formats are allowed.");
-
-                if (category.ImgUrl.Length > 524288) // 512 KB limit
-                    return BadRequest("File size must be less than 512 KB.");
-
-                // Ensure folder exists
-                var imagesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "category");
                 if (!Directory.Exists(imagesPath))
                     Directory.CreateDirectory(imagesPath);
 
-                // Generate unique file name
-                var fileName = $"{Guid.NewGuid()}{extension}";
                 var filePath = Path.Combine(imagesPath, fileName);
+                await System.IO.File.WriteAllBytesAsync(filePath, category.ImageData);
+
+                var imageUrl = $"{Request.Scheme}://{Request.Host}/images/category/{fileName}";
+
+                var modelCategory = new ProductCategoryModel
+                {
+                    Name = category.Name,
+                    Description = category.Description,
+                    ImagePath = imageUrl,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _categoryRepository.AddAsync(modelCategory);
+
+                return CreatedAtAction(nameof(GetById),
+                    new { id = modelCategory.Id },
+                    modelCategory);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Image upload failed", Error = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] CategoryDto updatedCategory)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var existingCategory = await _categoryRepository.FindByIdAsync(id);
+            if (existingCategory == null)
+                return NotFound($"Category with ID {id} not found.");
+
+            existingCategory.Name = updatedCategory.Name;
+            existingCategory.Description = updatedCategory.Description;
+
+            if (updatedCategory.ImageData != null && updatedCategory.ImageData.Length > 0)
+            {
+                if (updatedCategory.ImageData.Length > 524_288)
+                    return BadRequest("File size must be less than 512 KB.");
+
+                var imagesPath = Path.Combine(_env.WebRootPath, "images", "category");
+                if (!Directory.Exists(imagesPath))
+                    Directory.CreateDirectory(imagesPath);
+
+                var newFileName = $"{Guid.NewGuid()}.webp";
+                var newFilePath = Path.Combine(imagesPath, newFileName);
 
                 try
                 {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    await System.IO.File.WriteAllBytesAsync(newFilePath, updatedCategory.ImageData);
+
+                    // Remove the old image if exists
+                    if (!string.IsNullOrWhiteSpace(existingCategory.ImagePath))
                     {
-                        await category.ImgUrl.CopyToAsync(stream);
+                        var oldFileName = Path.GetFileName(existingCategory.ImagePath);
+                        var oldFilePath = Path.Combine(imagesPath, oldFileName);
+
+                        if (System.IO.File.Exists(oldFilePath))
+                            System.IO.File.Delete(oldFilePath);
                     }
 
-                    // Store URL in category
-                    category.ImgUrlPath = $"{Request.Scheme}://{Request.Host}/images/category/{fileName}";
+                    existingCategory.ImagePath = $"{Request.Scheme}://{Request.Host}/images/category/{newFileName}";
                 }
                 catch (Exception ex)
                 {
-                    return StatusCode(500, new
-                    {
-                        Message = "An error occurred while uploading the image.",
-                        Error = ex.Message
-                    });
+                    return StatusCode(500, new { Message = "Image upload failed", Error = ex.Message });
                 }
             }
-            else
-            {
-                return BadRequest("Image is required.");
-            }
 
-            category.CreatedAt = DateTime.UtcNow;
-            await _categoryRepository.AddAsync(category);
-            category.ImgUrl = null; // Prevent serialization issues
-
-            var responseCategory = new
-            {
-                category.Id,
-                category.Name,
-                category.ImgUrlPath,
-                category.Description,
-                category.CreatedAt
-            };
-
-            return CreatedAtAction(nameof(GetById), new { id = category.Id }, responseCategory);
+            await _categoryRepository.UpdateAsync(id, existingCategory);
+            return Ok(existingCategory);
         }
 
-        // Delete category by ID
+
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -119,109 +157,23 @@ namespace ecommerce.Controllers
                 return NotFound($"Category with ID {id} not found.");
             }
 
+            // Delete image from server
+            if (!string.IsNullOrEmpty(existingCategory.ImagePath))
+            {
+                var imagesPath = Path.Combine(_env.WebRootPath, "images", "category");
+                var oldFileName = Path.GetFileName(existingCategory.ImagePath);
+                var oldFilePath = Path.Combine(imagesPath, oldFileName);
+
+                if (System.IO.File.Exists(oldFilePath))
+                    System.IO.File.Delete(oldFilePath);
+            }
+
             await _categoryRepository.DeleteAsync(id);
-            return NoContent(); // 204 No Content response
+
+            return NoContent();
         }
 
 
-        // Update category by ID
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, [FromForm] ProductCategoryModel updatedCategory)
-        {
-            if (updatedCategory == null)
-            {
-                return BadRequest("Updated category data is required.");
-            }
 
-            var existingCategory = await _categoryRepository.FindByIdAsync(id);
-            if (existingCategory == null)
-            {
-                return NotFound($"Category with ID {id} not found.");
-            }
-
-            updatedCategory.Id = id;
-            updatedCategory.CreatedAt = existingCategory.CreatedAt; // Preserve original creation date
-
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
-
-            bool hasNewImage = updatedCategory.ImgUrl != null;
-            if (hasNewImage)
-            {
-                var extension = Path.GetExtension(updatedCategory.ImgUrl.FileName).ToLowerInvariant();
-                if (!allowedExtensions.Contains(extension))
-                    return BadRequest("Only JPG, JPEG, PNG, and WEBP formats are allowed.");
-
-                if (updatedCategory.ImgUrl.Length > 524288) // 512 KB limit
-                    return BadRequest("File size must be less than 512 KB.");
-
-                // Ensure folder exists
-                var imagesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "category");
-                if (!Directory.Exists(imagesPath))
-                    Directory.CreateDirectory(imagesPath);
-
-                // Generate unique file name
-                var fileName = $"{Guid.NewGuid()}{extension}";
-                var filePath = Path.Combine(imagesPath, fileName);
-
-                try
-                {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await updatedCategory.ImgUrl.CopyToAsync(stream);
-                    }
-
-                    // Store URL in category
-                    updatedCategory.ImgUrlPath = $"{Request.Scheme}://{Request.Host}/images/category/{fileName}";
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new
-                    {
-                        Message = "An error occurred while uploading the image.",
-                        Error = ex.Message
-                    });
-                }
-            }
-            else
-            {
-                // Preserve existing image path if no new image
-                updatedCategory.ImgUrlPath = existingCategory.ImgUrlPath;
-            }
-
-            await _categoryRepository.UpdateAsync(id, updatedCategory);
-            updatedCategory.ImgUrl = null; // Prevent serialization issues
-
-            var responseCategory = new
-            {
-                updatedCategory.Id,
-                updatedCategory.Name,
-                updatedCategory.ImgUrlPath,
-                updatedCategory.Description,
-                updatedCategory.CreatedAt
-            };
-
-            return Ok(responseCategory);
-        }
-
-
-        //// Update category by ID
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> Update(string id, ProductCategoryModel updatedCategory)
-        //{
-        //    if (updatedCategory == null)
-        //    {
-        //        return BadRequest("Updated category data is required.");
-        //    }
-
-        //    var existingCategory = await _categoryRepository.FindByIdAsync(id);
-        //    if (existingCategory == null)
-        //    {
-        //        return NotFound($"Category with ID {id} not found.");
-        //    }
-
-        //    updatedCategory.Id = id;
-        //    await _categoryRepository.UpdateAsync(id, updatedCategory);
-        //    return Ok(updatedCategory);
-        //}
     }
 }

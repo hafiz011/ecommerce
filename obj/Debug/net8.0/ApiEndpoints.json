@@ -156,34 +156,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "Id",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Name",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "ImgUrl",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": false
-      },
-      {
-        "Name": "ImgUrlPath",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Description",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "CreatedAt",
-        "Type": "System.DateTime",
-        "IsRequired": false
+        "Name": "category",
+        "Type": "ecommerce.Models.Dtos.CategoryDto",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -216,22 +191,6 @@
   },
   {
     "ContainingType": "ecommerce.Controllers.CategoryController",
-    "Method": "Delete",
-    "RelativePath": "api/Category/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ecommerce.Controllers.CategoryController",
     "Method": "Update",
     "RelativePath": "api/Category/{id}",
     "HttpMethod": "PUT",
@@ -244,34 +203,25 @@
         "IsRequired": true
       },
       {
-        "Name": "Id",
+        "Name": "updatedCategory",
+        "Type": "ecommerce.Models.Dtos.CategoryDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.CategoryController",
+    "Method": "Delete",
+    "RelativePath": "api/Category/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
         "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Name",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "ImgUrl",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": false
-      },
-      {
-        "Name": "ImgUrlPath",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Description",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "CreatedAt",
-        "Type": "System.DateTime",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

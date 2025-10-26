@@ -274,6 +274,45 @@
           }
         }
       },
+      "put": {
+        "tags": [
+          "Category"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
       "delete": {
         "tags": [
           "Category"
@@ -293,77 +332,6 @@
             "description": "Success"
           }
         }
-      },
-      "put": {
-        "tags": [
-          "Category"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "Id": {
-                    "type": "string"
-                  },
-                  "Name": {
-                    "type": "string"
-                  },
-                  "ImgUrl": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "ImgUrlPath": {
-                    "type": "string"
-                  },
-                  "Description": {
-                    "type": "string"
-                  },
-                  "CreatedAt": {
-                    "type": "string",
-                    "format": "date-time"
-                  }
-                }
-              },
-              "encoding": {
-                "Id": {
-                  "style": "form"
-                },
-                "Name": {
-                  "style": "form"
-                },
-                "ImgUrl": {
-                  "style": "form"
-                },
-                "ImgUrlPath": {
-                  "style": "form"
-                },
-                "Description": {
-                  "style": "form"
-                },
-                "CreatedAt": {
-                  "style": "form"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
       }
     },
     "/api/Category": {
@@ -373,51 +341,19 @@
         ],
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "Id": {
-                    "type": "string"
-                  },
-                  "Name": {
-                    "type": "string"
-                  },
-                  "ImgUrl": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "ImgUrlPath": {
-                    "type": "string"
-                  },
-                  "Description": {
-                    "type": "string"
-                  },
-                  "CreatedAt": {
-                    "type": "string",
-                    "format": "date-time"
-                  }
-                }
-              },
-              "encoding": {
-                "Id": {
-                  "style": "form"
-                },
-                "Name": {
-                  "style": "form"
-                },
-                "ImgUrl": {
-                  "style": "form"
-                },
-                "ImgUrlPath": {
-                  "style": "form"
-                },
-                "Description": {
-                  "style": "form"
-                },
-                "CreatedAt": {
-                  "style": "form"
-                }
+                "$ref": "#/components/schemas/CategoryDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryDto"
               }
             }
           }
@@ -665,6 +601,25 @@
             "nullable": true
           },
           "zip": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageData": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "description": {
             "type": "string",
             "nullable": true
           }

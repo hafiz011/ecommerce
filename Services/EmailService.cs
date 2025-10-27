@@ -1,13 +1,48 @@
 ﻿namespace ecommerce.Services
 {
+    using MailKit.Net.Smtp;
+    using MimeKit;
     public class EmailService
     {
-        public static void SendResetPasswordEmail(string email, string token)
+        private readonly IConfiguration _configuration;
+
+        public EmailService(IConfiguration configuration)
         {
-            // Replace with actual email sending logic
-            var resetLink = $"https://yourdomain.com/reset-password?token={token}";
-            Console.WriteLine($"Password reset link: {resetLink}");
-            // Use your email sending service to send the email here
+            _configuration = configuration;
+        }
+
+        public async Task<bool> SendEmailAsync(string toEmail, string subject, string body)
+        {
+            try
+            {
+                var emailSettings = _configuration.GetSection("EmailSettings");
+
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Tech Ciph", emailSettings["Email"]));
+                message.To.Add(new MailboxAddress("", toEmail));
+                message.Subject = subject;
+
+                message.Body = new TextPart("html")
+                {
+                    Text = body
+                };
+
+                using (var client = new SmtpClient())
+                {
+                    await client.ConnectAsync(emailSettings["SmtpServer"], int.Parse(emailSettings["Port"]), MailKit.Security.SecureSocketOptions.StartTls);
+                    await client.AuthenticateAsync(emailSettings["Email"], emailSettings["Password"]);
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
+                }
+
+                return true;
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Email sending failed: {ex.Message}");
+                return false;
+            }
         }
     }
 

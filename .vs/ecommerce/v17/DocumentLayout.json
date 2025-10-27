@@ -3,28 +3,23 @@
   "WorkspaceRootPath": "D:\\GitHub\\ecommerce\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\products.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\auth\\login.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\customauthstateprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\layout\\categorysidebar.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|d:\\github\\ecommerce\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|solutionrelative:controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\categorics.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\auth\\resetpassword.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\admin\\categories.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\auth\\register.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\productcard.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\models\\productdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\auth\\forgotpassword.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,7 +29,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 11,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -58,106 +53,80 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CategorySidebar.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Layout\\CategorySidebar.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Layout\\CategorySidebar.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Layout\\CategorySidebar.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Layout\\CategorySidebar.razor",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAACsAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-26T12:02:43.858Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ProductService.cs",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Services\\ProductService.cs",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Services\\ProductService.cs",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Services\\ProductService.cs",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Services\\ProductService.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAuwCwAAAA2AAAAAAAAAA==",
+              "Title": "CustomAuthStateProvider.cs",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\CustomAuthStateProvider.cs",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\CustomAuthStateProvider.cs",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\CustomAuthStateProvider.cs",
+              "RelativeToolTip": "..\\Ecommerce.Client\\CustomAuthStateProvider.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-26T12:01:21.928Z",
+              "WhenOpened": "2025-10-27T12:05:00.712Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Categorics.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Categorics.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Categorics.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Categorics.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Categorics.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-26T11:59:57.978Z",
+              "DocumentIndex": 2,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "D:\\GitHub\\ecommerce\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
+              "ToolTip": "D:\\GitHub\\ecommerce\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Controllers\\AuthController.cs",
+              "ViewState": "AgIAAEcAAAAAAAAAAAAUwFcAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-27T12:04:58.376Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Categories.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Admin\\Categories.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Admin\\Categories.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Admin\\Categories.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Admin\\Categories.razor",
+              "Title": "Register.razor",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Auth\\Register.razor",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Auth\\Register.razor",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Auth\\Register.razor",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Auth\\Register.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-26T11:59:38.754Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ProductCard.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\ProductCard.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\ProductCard.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\ProductCard.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\ProductCard.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-26T11:56:26.192Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ProductDto.cs",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Models\\ProductDto.cs",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Models\\ProductDto.cs",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Models\\ProductDto.cs",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Models\\ProductDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-26T11:42:24.032Z",
+              "WhenOpened": "2025-10-27T12:02:39.471Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Products.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Products.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Products.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Products.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Products.razor",
-              "ViewState": "AgIAADYAAAAAAAAAAAAAAEQAAAAmAAAAAAAAAA==",
+              "Title": "Login.razor",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Auth\\Login.razor",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Auth\\Login.razor",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Auth\\Login.razor",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Auth\\Login.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-26T11:23:19.942Z",
+              "WhenOpened": "2025-10-27T12:02:37.742Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "Home.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Home.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Home.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Home.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Home.razor",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAABIAAAAGAAAAAAAAAA==",
+              "Title": "ForgotPassword.razor",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Auth\\ForgotPassword.razor",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Auth\\ForgotPassword.razor",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Auth\\ForgotPassword.razor",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Auth\\ForgotPassword.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-26T11:21:51.059Z",
+              "WhenOpened": "2025-10-27T12:02:35.869Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ResetPassword.razor",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Auth\\ResetPassword.razor",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Auth\\ResetPassword.razor",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Auth\\ResetPassword.razor",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Auth\\ResetPassword.razor",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAAD4AAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-27T12:01:44.665Z",
               "EditorCaption": ""
             }
           ]

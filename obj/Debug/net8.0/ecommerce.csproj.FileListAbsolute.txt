@@ -224,3 +224,8 @@ D:\GitHub\ecommerce\obj\Debug\net8.0\ecommerce.pdb
 D:\GitHub\ecommerce\obj\Debug\net8.0\ecommerce.genruntimeconfig.cache
 D:\GitHub\ecommerce\obj\Debug\net8.0\ref\ecommerce.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\ecommerce.staticwebassets.runtime.json
+D:\GitHub\ecommerce\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+D:\GitHub\ecommerce\bin\Debug\net8.0\MailKit.dll
+D:\GitHub\ecommerce\bin\Debug\net8.0\MimeKit.dll
+D:\GitHub\ecommerce\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\GitHub\ecommerce\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll

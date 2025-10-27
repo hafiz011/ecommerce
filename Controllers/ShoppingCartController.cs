@@ -53,7 +53,7 @@ namespace ecommerce.Controllers
             var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId)
                        ?? new ShoppingCartModel
                        {
-                           Id = Guid.NewGuid().ToString(),
+                           //Id = Guid.NewGuid().ToString(),
                            UserId = userId,
                            CreatedAt = DateTime.UtcNow,
                            UpdatedAt = DateTime.UtcNow

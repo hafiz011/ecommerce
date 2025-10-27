@@ -1,4 +1,5 @@
 ﻿using ecommerce.Models;
+using ecommerce.Models.Dtos;
 using ecommerce.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +24,68 @@ namespace ecommerce.Controllers
             _category = categoryRepository;
         }
 
+
+
+        // view page by page
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 16)
+        {
+            var (items, total) = await _productRepository.GetPagedAsync(page, pageSize);
+
+            return Ok(new PagedResult<ProductDto>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalItems = total
+            });
+        }
+
+
+        [HttpGet("filterpaged")]
+        public async Task<IActionResult> GetFilteredPaged(
+             [FromQuery] string? category,
+             [FromQuery] decimal? minPrice,
+             [FromQuery] decimal? maxPrice,
+             [FromQuery] string? q,
+             [FromQuery] int page = 1,
+             [FromQuery] int pageSize = 16)
+        {
+            var filter = new ProductFilter
+            {
+                CategoryId = category,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
+                //Tags = tags ?? new List<string>(),
+                //IsNew = isNew,
+                Search = q
+            };
+
+            var (items, total) = await _productRepository.GetFilteredPagedAsync(filter, page, pageSize);
+
+            return Ok(new PagedResult<ProductDto>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalItems = total
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         // GET: api/Product
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
@@ -45,11 +108,16 @@ namespace ecommerce.Controllers
             return Ok(product);
         }
 
+
+
+
         // POST: api/Product
+        // admin
+
         [HttpPost]
         public async Task<IActionResult> CreateProduct(ProductModel product)
         {
-            product.Id = Guid.NewGuid().ToString();
+            //product.Id = Guid.NewGuid().ToString();
             if (product == null)
                 return BadRequest("Invalid product data.");
             //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

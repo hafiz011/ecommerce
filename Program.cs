@@ -100,7 +100,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
+builder.Services.AddTransient<MongoDbSeeder>();
+
+
+
+
 var app = builder.Build();
+
+
+
+// Seed Data
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<MongoDbSeeder>();
+    await seeder.SeedAsync();
+}
 
 // Configure middleware to handle forwarded headers
 app.UseForwardedHeaders(new ForwardedHeadersOptions

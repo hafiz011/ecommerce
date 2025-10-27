@@ -5,6 +5,8 @@ namespace ecommerce.Models
 {
     public class ProductModel
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
         public string Name { get; set; }
@@ -23,6 +25,7 @@ namespace ecommerce.Models
         public List<Discount> Discounts { get; set; } = new List<Discount>();
         public string SellerId { get; set; } // Reference to User
         public bool IsNew { get; set; } // true for new, false for used
+        public double Rating { get; set; } // true for new, false for used
 
         public DateTime CreatedAt { get; set; }
 

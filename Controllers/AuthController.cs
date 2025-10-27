@@ -1,14 +1,17 @@
-﻿using ecommerce.Models;
-using ecommerce.Helpers;
+﻿using ecommerce.Helpers;
+using ecommerce.Models;
+using ecommerce.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Identity.Data;
+using System.Threading.Tasks;
 
 namespace ecommerce.Controllers
 {
@@ -20,55 +23,94 @@ namespace ecommerce.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly EmailService _emailService;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, RoleManager<ApplicationRole> roleManager)
+
+        public AuthController(UserManager<ApplicationUser> userManager, 
+            SignInManager<ApplicationUser> signInManager, 
+            IConfiguration configuration, 
+            EmailService emailService,
+            RoleManager<ApplicationRole> roleManager,
+            ILogger<AuthController> logger
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _emailService = emailService;
             _roleManager = roleManager;
+            _logger = logger;
         }
 
         // POST: api/auth/login
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequestModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var user = await _userManager.FindByEmailAsync(model.Email);
-
-            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
-                return Unauthorized(new { Message = "Invalid email or password" });
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var role = roles.Count > 0 ? roles[0] : "User"; // Default to "User" if no roles are assigned
-
-            // Use the JwtTokenHelper to generate the token
-            var token = JwtTokenHelper.GenerateToken(user.Id.ToString(), role, _configuration["JwtSettings:Key"], _configuration["JwtSettings:Issuer"], _configuration["JwtSettings:Audience"]);
-
-            return Ok(new
+            try
             {
-                Token = token,
-                User = new
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                    return Unauthorized(new { Message = "Invalid email or password" });
+
+                if (!user.EmailConfirmed)
                 {
-                    user.Id,
-                    user.FirstName,
-                    user.LastName,
-                    user.Email,
-                    user.PhoneNumber,
+                    return Unauthorized(new { Message = "You need to confirm your email before logging in." });
                 }
-            });
+
+                if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+                    return Unauthorized(new { Message = "Invalid email or password" });
+
+                if (user.LockoutEnd.HasValue && user.LockoutEnd > DateTime.UtcNow)
+                    return Unauthorized(new { Message = "Your account is locked. Please try again later." });
+
+                var roles = await _userManager.GetRolesAsync(user);
+                var role = roles.Count > 0 ? roles[0] : "User";
+
+                var token = JwtTokenHelper.GenerateToken(user.Id.ToString(), role, _configuration["JwtSettings:Key"], _configuration["JwtSettings:Issuer"], _configuration["JwtSettings:Audience"]);
+                _logger.LogInformation($"User {user.Email} successfully logged in.");
+
+                return Ok(new
+                {
+                    Token = token,
+                    Role = role,
+                    User = new
+                    {
+                        user.Id,
+                        user.Email,
+                        FullName = $"{user.FirstName} {user.LastName}"
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred. Please try again later." });
+            }
+        }
+
+        // logout endpoint
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok(new { Message = "Logged out successfully." });
         }
 
 
+        // POST: api/auth/register
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Create a new ApplicationUser object
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
+                return BadRequest(new { Message = "Email already in use" });
+
             var user = new ApplicationUser
             {
                 UserName = model.Email,
@@ -79,36 +121,95 @@ namespace ecommerce.Controllers
                 Address = model.Address
             };
 
-            // Create the user in the database
             var result = await _userManager.CreateAsync(user, model.Password);
-
             if (!result.Succeeded)
-                return BadRequest(result.Errors);
+                return BadRequest(new { Message = "User registration failed", Errors = result.Errors });
 
-            // Assign the "User" role to the new account
             const string defaultRole = "User";
 
-            // Check if the role exists; if not, create it
-            if (!await _roleManager.RoleExistsAsync(defaultRole))
+            var roleExists = await _roleManager.RoleExistsAsync(defaultRole);
+            if (!roleExists)
             {
                 var roleResult = await _roleManager.CreateAsync(new ApplicationRole { Name = defaultRole });
                 if (!roleResult.Succeeded)
                 {
-                    return BadRequest(new { Message = "Failed to create default role." });
+                    return BadRequest(new { Message = "Failed to create default role", Errors = roleResult.Errors });
                 }
             }
 
-            // Add the user to the "User" role
             await _userManager.AddToRoleAsync(user, defaultRole);
 
-            return Ok(new { Message = "User registered successfully!" });
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            // URL-encode the token and assign it back to the variable
+            var encodedToken = WebUtility.UrlEncode(token);
+
+            //var confirmationLink = Url.Action("ConfirmEmail", "Auth",
+            //    new { userId = user.Id, token = encodedToken }, Request.Scheme);
+            var confirmationLink = $"http://localhost:5290/confirm-email?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
+
+            bool emailSent = await _emailService.SendEmailAsync(user.Email, "Confirm your email",
+                $"Please confirm your account by clicking this link: <a href='{confirmationLink}'>Confirm Email</a>");
+
+            if (!emailSent)
+                return StatusCode(500, new { Message = "User registered, but failed to send confirmation email." });
+
+            return Ok(new { Message = "User registered successfully! Please check your email for confirmation." });
+        }
+
+        public class ConfirmEmailModel
+        {
+            public string UserId { get; set; }
+            public string Token { get; set; }
+        }
+
+
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailModel model)
+        {
+            if (string.IsNullOrEmpty(model.UserId) || string.IsNullOrEmpty(model.Token))
+            {
+                return BadRequest(new { Message = "Invalid confirmation request. User ID and Token are required." });
+            }
+
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found." });
+            }
+
+            if (user.EmailConfirmed)
+            {
+                return Ok(new { Message = "Your email is already confirmed. You can log in now." });
+            }
+            //var decodedToken = WebUtility.UrlDecode(model.Token);
+            var result = await _userManager.ConfirmEmailAsync(user, model.Token);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { Message = "Email confirmation failed. Invalid or expired token." });
+            }
+
+            return Ok(new { Message = "Email confirmed successfully! You can now log in." });
+        }
+
+
+        public class ForgotPasswordModel
+        {
+            [Required]
+            [EmailAddress]
+            public string Email { get; set; }
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(RegisterModel model)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
         {
-            if (ModelState.IsNullOrEmpty())
-                return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Message = "Invalid email"
+                });
+            }
 
             // Find the user by email
             var user = await _userManager.FindByEmailAsync(model.Email);
@@ -117,12 +218,18 @@ namespace ecommerce.Controllers
 
             // Generate the reset token
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebUtility.UrlEncode(token);
+            // var resetUrl = $"{Request.Scheme}://{Request.Host}/reset-password?token={encodedToken}&email={model.Email}";
+            var resetUrl = $"http://localhost:5173/reset-password?email={model.Email}&token={encodedToken}";
 
-            // You should send the token to the user's email, but for now, just return it for testing
-            // In a production app, use an email service like SendGrid, SMTP, etc.
-            // EmailService.SendResetPasswordEmail(user.Email, token);
+            _logger.LogInformation($"Generated password reset token for {model.Email}");
+            bool emailSent = await _emailService.SendEmailAsync(user.Email, "Password Reset",
+                $"Click here to reset your password: <a href='{resetUrl}'>Reset Password</a>");
 
-            return Ok(new { Message = "Password reset token sent to your email." });
+            if (!emailSent)
+                return StatusCode(500, new { Message = "Failed to send reset password email." });
+
+            return Ok(new { Message = "Password reset link sent to your email." });
         }
 
         [HttpPost("reset-password")]
@@ -142,7 +249,103 @@ namespace ecommerce.Controllers
             if (!result.Succeeded)
                 return BadRequest(new { Message = "Invalid or expired token." });
 
+            _logger.LogInformation($"Password successfully reset for {model.Email}");
             return Ok(new { Message = "Password reset successfully." });
+        }
+
+        public class ChangePasswordModel
+        {
+            public string currentPassword { get; set; }
+            public string newPassword { get; set; }
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized(new { Message = "User not authenticated." });
+
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                    return NotFound(new { Message = "User not found." });
+
+                var result = await _userManager.ChangePasswordAsync(user, model.currentPassword, model.newPassword);
+                if (!result.Succeeded)
+                {
+                    return BadRequest(new
+                    {
+                        Message = "Password change failed.",
+                        Errors = result.Errors.Select(e => e.Description)
+                    });
+                }
+
+                _logger.LogInformation($"Password successfully reset for user {user.Email}");
+
+                return Ok(new { Message = "Password reset successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error changing password");
+                return StatusCode(500, new { Message = "Internal server error", Error = ex.Message });
+            }
+        }
+
+        [HttpGet("account")]
+        public async Task<IActionResult> GetAccountDetails()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { Message = "User not authenticated." });
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return NotFound(new { Message = "User not found." });
+
+            return Ok(new
+            {
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                user.EmailConfirmed,
+                user.PhoneNumber,
+                user.PhoneNumberConfirmed,
+                user.Address
+            });
+        }
+
+        public class UpdateAccountModel
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Phone { get; set; }
+            public Address Address { get; set; }
+        }
+
+        [HttpPut("account")]
+        public async Task<IActionResult> UpdateAccount(UpdateAccountModel model)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { Message = "User not authenticated." });
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return NotFound(new { Message = "User not found." });
+
+            user.FirstName = model.FirstName ?? user.FirstName;
+            user.LastName = model.LastName ?? user.LastName;
+            user.PhoneNumber = model.Phone ?? user.PhoneNumber;
+            user.Address = model.Address ?? user.Address;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { Message = "Failed to update account.", Errors = result.Errors });
+            }
+
+            return Ok(new { Message = "Account updated successfully."});
         }
 
 

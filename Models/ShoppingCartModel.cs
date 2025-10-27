@@ -5,6 +5,8 @@ namespace ecommerce.Models
 {
     public class ShoppingCartModel
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
         public string UserId { get; set; }

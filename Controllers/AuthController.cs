@@ -2,16 +2,11 @@
 using ecommerce.Models;
 using ecommerce.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.JsonWebTokens;
 using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ecommerce.Controllers
 {
@@ -118,14 +113,13 @@ namespace ecommerce.Controllers
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 PhoneNumber = model.Phone,
-                Address = model.Address
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
                 return BadRequest(new { Message = "User registration failed", Errors = result.Errors });
 
-            const string defaultRole = "User";
+            const string defaultRole = "Admin";
 
             var roleExists = await _roleManager.RoleExistsAsync(defaultRole);
             if (!roleExists)
@@ -146,7 +140,7 @@ namespace ecommerce.Controllers
 
             //var confirmationLink = Url.Action("ConfirmEmail", "Auth",
             //    new { userId = user.Id, token = encodedToken }, Request.Scheme);
-            var confirmationLink = $"http://localhost:5290/confirm-email?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
+            var confirmationLink = $"http://localhost:5051/confirm-email?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
 
             bool emailSent = await _emailService.SendEmailAsync(user.Email, "Confirm your email",
                 $"Please confirm your account by clicking this link: <a href='{confirmationLink}'>Confirm Email</a>");
@@ -220,7 +214,7 @@ namespace ecommerce.Controllers
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebUtility.UrlEncode(token);
             // var resetUrl = $"{Request.Scheme}://{Request.Host}/reset-password?token={encodedToken}&email={model.Email}";
-            var resetUrl = $"http://localhost:5173/reset-password?email={model.Email}&token={encodedToken}";
+            var resetUrl = $"http://localhost:5051/reset-password?email={model.Email}&token={encodedToken}";
 
             _logger.LogInformation($"Generated password reset token for {model.Email}");
             bool emailSent = await _emailService.SendEmailAsync(user.Email, "Password Reset",
@@ -297,6 +291,9 @@ namespace ecommerce.Controllers
         public async Task<IActionResult> GetAccountDetails()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+    
+
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized(new { Message = "User not authenticated." });
 

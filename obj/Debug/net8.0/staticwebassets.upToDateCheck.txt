@@ -1,3 +1,5 @@
 wwwroot\images\category\c9771ffa-bc16-4b29-8a89-b96a89cf3169.webp
 wwwroot\images\category\454a40ee-f311-42ed-ac73-64ecdd69187d.webp
 wwwroot\images\category\af511193-2736-4b6d-99ff-410d9df8c8bf.webp
+wwwroot\images\category\a4c0e078-1f48-4e9b-8d3c-4c658fab995e.webp
+wwwroot\images\category\f2a25238-76a5-4c97-a856-86df83b5a8cf.webp

@@ -20,4 +20,8 @@
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\Ecommerce.Client\Layout\Component.razor" Link="Component.razor" />
+  </ItemGroup>
+
 </Project>

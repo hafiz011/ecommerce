@@ -1016,14 +1016,11 @@
             "type": "string",
             "nullable": true
           },
-          "phone": {
+          "password": {
             "type": "string",
             "nullable": true
           },
-          "address": {
-            "$ref": "#/components/schemas/Address"
-          },
-          "password": {
+          "phone": {
             "type": "string",
             "nullable": true
           }

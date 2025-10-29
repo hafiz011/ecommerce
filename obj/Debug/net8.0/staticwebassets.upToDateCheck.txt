@@ -3,3 +3,6 @@ wwwroot\images\category\454a40ee-f311-42ed-ac73-64ecdd69187d.webp
 wwwroot\images\category\af511193-2736-4b6d-99ff-410d9df8c8bf.webp
 wwwroot\images\category\a4c0e078-1f48-4e9b-8d3c-4c658fab995e.webp
 wwwroot\images\category\f2a25238-76a5-4c97-a856-86df83b5a8cf.webp
+wwwroot\images\category\9a8165a2-e165-4f9e-9c9a-385930169213.webp
+wwwroot\images\category\1de53f66-4c64-4f1e-ba3f-98e904d4057c.webp
+wwwroot\images\category\f7b5e632-84ed-471b-ac83-848ef5a9338a.webp

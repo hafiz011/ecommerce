@@ -84,9 +84,7 @@ namespace ecommerce.Controllers
 
                 await _categoryRepository.AddAsync(modelCategory);
 
-                return CreatedAtAction(nameof(GetById),
-                    new { id = modelCategory.Id },
-                    modelCategory);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -142,7 +140,7 @@ namespace ecommerce.Controllers
             }
 
             await _categoryRepository.UpdateAsync(id, existingCategory);
-            return Ok(existingCategory);
+            return Ok();
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using ecommerce.Models;
 using ecommerce.Models.Dtos;
 using ecommerce.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,6 +48,7 @@ namespace ecommerce.Controllers
 
 
         // Add a new category
+        [Authorize (Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddCategory([FromBody] CategoryDto category)
         {
@@ -92,6 +94,7 @@ namespace ecommerce.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] CategoryDto updatedCategory)
         {
@@ -145,7 +148,7 @@ namespace ecommerce.Controllers
 
 
 
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {

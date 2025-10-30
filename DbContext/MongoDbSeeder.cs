@@ -6,6 +6,7 @@ namespace ecommerce.DbContext
     public class MongoDbSeeder
     {
         private readonly MongoDbContext _context;
+        private readonly Random _rand = new();
 
         public MongoDbSeeder(MongoDbContext context)
         {
@@ -16,7 +17,20 @@ namespace ecommerce.DbContext
         {
             await SeedCategoriesAsync();
             await SeedProductsAsync();
+
+
+            await _context.Products.Indexes.CreateManyAsync(new[]
+            {
+                new CreateIndexModel<ProductModel>(Builders<ProductModel>.IndexKeys.Ascending(p => p.CategoryId)),
+                new CreateIndexModel<ProductModel>(Builders<ProductModel>.IndexKeys.Ascending(p => p.Price)),
+                new CreateIndexModel<ProductModel>(Builders<ProductModel>.IndexKeys.Descending(p => p.CreatedAt))
+            });
+
         }
+
+
+
+
 
         private async Task SeedCategoriesAsync()
         {
@@ -25,13 +39,17 @@ namespace ecommerce.DbContext
             if (await categories.CountDocumentsAsync(FilterDefinition<ProductCategoryModel>.Empty) > 0)
                 return; // Already seeded
 
-            var seedCategories = new List<ProductCategoryModel>
+            var seedCategories = new List<ProductCategoryModel>();
+            for (int i = 1; i <= 16; i++)
             {
-                new() { Name = "Electronics", ImagePath = "electronics.jpg", Description = "All electronic items", CreatedAt = DateTime.UtcNow },
-                new() { Name = "Clothing", ImagePath = "clothing.jpg", Description = "Men & Women Clothing", CreatedAt = DateTime.UtcNow },
-                new() { Name = "Books", ImagePath = "books.jpg", Description = "Books & Stationery", CreatedAt = DateTime.UtcNow },
-                new() { Name = "Home & Kitchen", ImagePath = "home_kitchen.jpg", Description = "Home & Kitchen Essentials", CreatedAt = DateTime.UtcNow }
-            };
+                seedCategories.Add(new ProductCategoryModel
+                {
+                    Name = $"Category {i}",
+                    ImagePath = $"category{i}.jpg",
+                    Description = $"Description for Category {i}",
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
 
             await categories.InsertManyAsync(seedCategories);
         }
@@ -45,51 +63,46 @@ namespace ecommerce.DbContext
                 return; // Already seeded
 
             var categoryList = await categories.Find(_ => true).ToListAsync();
+            var seedProducts = new List<ProductModel>();
 
-            var seedProducts = new List<ProductModel>
+            for (int i = 1; i <= 100; i++)
             {
-                new()
+                var category = categoryList[_rand.Next(categoryList.Count)];
+                var price = _rand.Next(10, 2000); // price between 10 and 2000
+                var stock = _rand.Next(1, 200);
+                var rating = Math.Round(_rand.NextDouble() * 5, 1);
+                var hasDiscount = _rand.Next(0, 2) == 1; // 50% chance
+                var discounts = new List<Discount>();
+
+                if (hasDiscount)
                 {
-                    Name = "iPhone 15",
-                    Description = "Latest Apple iPhone 15",
-                    CategoryId = categoryList.First(c => c.Name == "Electronics").Id,
-                    Price = 1200,
-                    Images = new List<string> { "iphone15-1.jpg", "iphone15-2.jpg" },
-                    Tags = new List<string> { "Smartphone", "Apple" },
-                    StockQuantity = 50,
-                    SellerId = "seller1",
-                    IsNew = true,
-                    Rating = 4.8,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    Discounts = new List<Discount>
+                    discounts.Add(new Discount
                     {
-                        new Discount
-                        {
-                            Code = "SAVE10",
-                            Percentage = 10,
-                            ValidFrom = DateTime.UtcNow,
-                            ValidTo = DateTime.UtcNow.AddMonths(1),
-                            IsActive = true
-                        }
-                    }
-                },
-                new()
-                {
-                    Name = "Men's T-Shirt",
-                    Description = "Comfortable cotton t-shirt",
-                    CategoryId = categoryList.First(c => c.Name == "Clothing").Id,
-                    Price = 20,
-                    Images = new List<string> { "tshirt1.jpg" },
-                    Tags = new List<string> { "Cotton", "Men" },
-                    StockQuantity = 100,
-                    SellerId = "seller2",
-                    IsNew = true,
-                    Rating = 4.2,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                        Code = $"SAVE{_rand.Next(5, 30)}",
+                        Percentage = _rand.Next(5, 30),
+                        ValidFrom = DateTime.UtcNow.AddDays(-_rand.Next(0, 10)),
+                        ValidTo = DateTime.UtcNow.AddMonths(1),
+                        IsActive = true
+                    });
                 }
-            };
+
+                seedProducts.Add(new ProductModel
+                {
+                    Name = $"Product {i}",
+                    Description = $"Description for Product {i}",
+                    CategoryId = category.Id,
+                    Price = price,
+                    Images = new List<string> { $"product{i % 10 + 1}.jpg" }, // reuse some images
+                    Tags = new List<string> { "Tag1", "Tag2" },
+                    StockQuantity = stock,
+                    SellerId = $"seller{_rand.Next(1, 6)}",
+                    IsNew = _rand.Next(0, 2) == 1,
+                    Rating = rating,
+                    CreatedAt = DateTime.UtcNow.AddDays(-_rand.Next(0, 30)),
+                    UpdatedAt = DateTime.UtcNow,
+                    Discounts = discounts
+                });
+            }
 
             await products.InsertManyAsync(seedProducts);
         }

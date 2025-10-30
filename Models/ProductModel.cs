@@ -15,6 +15,7 @@ namespace ecommerce.Models
 
         public string CategoryId { get; set; }
 
+        [BsonRepresentation(BsonType.Decimal128)]
         public decimal Price { get; set; }
 
         public List<string> Images { get; set; } = new List<string>();

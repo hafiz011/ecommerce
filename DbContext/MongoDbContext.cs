@@ -18,7 +18,7 @@ namespace ecommerce.DbContext
         public IMongoCollection<ApplicationRole> Roles => _database.GetCollection<ApplicationRole>("Roles");
         public IMongoCollection<ProductModel> Products => _database.GetCollection<ProductModel>("Products");
         public IMongoCollection<Order> Orders => _database.GetCollection<Order>("Orders");
-        public IMongoCollection<ReviewModel> Reviews => _database.GetCollection<ReviewModel>("Reviews");
+        //public IMongoCollection<ReviewModel> Reviews => _database.GetCollection<ReviewModel>("Reviews");
         public IMongoCollection<ShoppingCartModel> ShoppingCart => _database.GetCollection<ShoppingCartModel>("Shopping_Cart");
         public IMongoCollection<ProductCategoryModel> Categories => _database.GetCollection<ProductCategoryModel>("Categories");
         public IMongoCollection<PaymentModel> Payments => _database.GetCollection<PaymentModel>("Payments");

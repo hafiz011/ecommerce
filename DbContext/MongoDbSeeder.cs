@@ -18,19 +18,14 @@ namespace ecommerce.DbContext
             await SeedCategoriesAsync();
             await SeedProductsAsync();
 
-
+            // Create indexes for better performance
             await _context.Products.Indexes.CreateManyAsync(new[]
             {
                 new CreateIndexModel<ProductModel>(Builders<ProductModel>.IndexKeys.Ascending(p => p.CategoryId)),
                 new CreateIndexModel<ProductModel>(Builders<ProductModel>.IndexKeys.Ascending(p => p.Price)),
                 new CreateIndexModel<ProductModel>(Builders<ProductModel>.IndexKeys.Descending(p => p.CreatedAt))
             });
-
         }
-
-
-
-
 
         private async Task SeedCategoriesAsync()
         {
@@ -64,13 +59,13 @@ namespace ecommerce.DbContext
 
             var categoryList = await categories.Find(_ => true).ToListAsync();
             var seedProducts = new List<ProductModel>();
+            var now = DateTime.UtcNow;
 
             for (int i = 1; i <= 100; i++)
             {
                 var category = categoryList[_rand.Next(categoryList.Count)];
-                var price = _rand.Next(10, 2000); // price between 10 and 2000
-                var stock = _rand.Next(1, 200);
-                var rating = Math.Round(_rand.NextDouble() * 5, 1);
+                var price = _rand.Next(50, 2000);
+                var stock = _rand.Next(1, 300);
                 var hasDiscount = _rand.Next(0, 2) == 1; // 50% chance
                 var discounts = new List<Discount>();
 
@@ -80,9 +75,24 @@ namespace ecommerce.DbContext
                     {
                         Code = $"SAVE{_rand.Next(5, 30)}",
                         Percentage = _rand.Next(5, 30),
-                        ValidFrom = DateTime.UtcNow.AddDays(-_rand.Next(0, 10)),
-                        ValidTo = DateTime.UtcNow.AddMonths(1),
+                        ValidFrom = now.AddDays(-_rand.Next(0, 10)),
+                        ValidTo = now.AddMonths(1),
                         IsActive = true
+                    });
+                }
+
+                // Generate sample reviews
+                var reviews = new List<Review>();
+                int reviewCount = _rand.Next(0, 10); // Up to 10 reviews
+                for (int j = 1; j <= reviewCount; j++)
+                {
+                    reviews.Add(new Review
+                    {
+                        UserId = $"user{_rand.Next(1, 20)}",
+                        UserName = $"User {_rand.Next(1, 100)}",
+                        Rating = _rand.Next(1, 6),
+                        Comment = $"This is a sample review {j} for Product {i}.",
+                        CreatedAt = now.AddDays(-_rand.Next(0, 30))
                     });
                 }
 
@@ -92,15 +102,18 @@ namespace ecommerce.DbContext
                     Description = $"Description for Product {i}",
                     CategoryId = category.Id,
                     Price = price,
-                    Images = new List<string> { $"product{i % 10 + 1}.jpg" }, // reuse some images
-                    Tags = new List<string> { "Tag1", "Tag2" },
+                    Images = new List<string> { $"product{i % 10 + 1}.jpg" },
+                    Tags = new List<string> { "Tag1", "Tag2", "Popular" },
                     StockQuantity = stock,
                     SellerId = $"seller{_rand.Next(1, 6)}",
                     IsNew = _rand.Next(0, 2) == 1,
-                    Rating = rating,
-                    CreatedAt = DateTime.UtcNow.AddDays(-_rand.Next(0, 30)),
-                    UpdatedAt = DateTime.UtcNow,
-                    Discounts = discounts
+                    Discounts = discounts,
+                    CreatedAt = now.AddDays(-_rand.Next(0, 60)),
+                    UpdatedAt = now,
+                    RestockDate = now.AddDays(_rand.Next(10, 40)),
+                    Review = reviews,
+                    Sold = _rand.Next(0, 500)
+                    // Note: averageRating is not stored, it's computed dynamically
                 });
             }
 

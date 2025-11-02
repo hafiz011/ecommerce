@@ -15,6 +15,7 @@
         public string? ImageUrl { get; set; } // preview image
 
         public int StockQuantity { get; set; }
+        public int Sold { get; set; }
         public bool IsNew { get; set; }
 
         public double Rating { get; set; } // (future review rating calculation)

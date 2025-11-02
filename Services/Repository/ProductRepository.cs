@@ -59,7 +59,12 @@ namespace ecommerce.Services.Repository
             var productDtos = items.Select(p =>
             {
                 var activeDiscount = p.Discounts?.FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
-
+                // Calculate average rating safely
+                double averageRating = 0;
+                if (p.Review != null && p.Review.Count > 0)
+                {
+                    averageRating = p.Review.Average(r => r.Rating);
+                }
                 return new ProductDto
                 {
                     Id = p.Id,
@@ -68,8 +73,9 @@ namespace ecommerce.Services.Repository
                     ImageUrl = p.Images?.FirstOrDefault() ?? "default.jpg",
                     CategoryId = p.CategoryId,
                     IsNew = p.IsNew,
-                    Rating = p.Rating,
+                    Rating = averageRating,
                     StockQuantity = p.StockQuantity,
+                    Sold = p.Sold,
                     CreatedAt = p.CreatedAt,
                     SellerId = p.SellerId,
                     Tags = p.Tags ?? new List<string>(),
@@ -121,7 +127,12 @@ namespace ecommerce.Services.Repository
             {
                 var activeDiscount = p.Discounts?.FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
                 var discountPercent = activeDiscount?.Percentage ?? 0;
-
+                // Calculate average rating safely
+                double averageRating = 0;
+                if (p.Review != null && p.Review.Count > 0)
+                {
+                    averageRating = p.Review.Average(r => r.Rating);
+                }
                 return new ProductDto
                 {
                     Id = p.Id,
@@ -130,8 +141,9 @@ namespace ecommerce.Services.Repository
                     ImageUrl = p.Images?.FirstOrDefault() ?? "default.jpg",
                     CategoryId = p.CategoryId,
                     IsNew = p.IsNew,
-                    Rating = p.Rating,
+                    Rating = averageRating,
                     StockQuantity = p.StockQuantity,
+                    Sold = p.Sold,
                     CreatedAt = p.CreatedAt,
                     SellerId = p.SellerId,
                     Tags = p.Tags ?? new List<string>(),

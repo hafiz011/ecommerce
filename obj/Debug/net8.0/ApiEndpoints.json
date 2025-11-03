@@ -296,16 +296,6 @@
   },
   {
     "ContainingType": "ecommerce.Controllers.ProductController",
-    "Method": "GetAllProducts",
-    "RelativePath": "api/Product",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ecommerce.Controllers.ProductController",
     "Method": "CreateProduct",
     "RelativePath": "api/Product",
     "HttpMethod": "POST",
@@ -318,6 +308,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.ProductController",
+    "Method": "GetMyProductsAsync",
+    "RelativePath": "api/Product/all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

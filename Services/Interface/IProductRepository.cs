@@ -13,5 +13,6 @@ namespace ecommerce.Services.Interface
         Task DeleteAsync(string id);
         Task<(List<ProductDto> items, int total)> GetPagedAsync(int page, int pageSize);
         Task<(List<ProductDto> items, int total)> GetFilteredPagedAsync(ProductFilter filter, int page, int pageSize);
+        Task<List<ProductDto>> GetProductBySellerIdAsync(string userId);
     }
 }

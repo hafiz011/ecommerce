@@ -105,7 +105,7 @@ namespace ecommerce.DbContext
                     Images = new List<string> { $"product{i % 10 + 1}.jpg" },
                     Tags = new List<string> { "Tag1", "Tag2", "Popular" },
                     StockQuantity = stock,
-                    SellerId = $"seller{_rand.Next(1, 6)}",
+                    SellerId = "31fad54c-a565-4dbd-8e1c-4e9002c0d501",
                     IsNew = _rand.Next(0, 2) == 1,
                     Discounts = discounts,
                     CreatedAt = now.AddDays(-_rand.Next(0, 60)),

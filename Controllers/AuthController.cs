@@ -119,7 +119,7 @@ namespace ecommerce.Controllers
             if (!result.Succeeded)
                 return BadRequest(new { Message = "User registration failed", Errors = result.Errors });
 
-            const string defaultRole = "Admin";
+            const string defaultRole = "User";
 
             var roleExists = await _roleManager.RoleExistsAsync(defaultRole);
             if (!roleExists)

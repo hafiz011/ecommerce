@@ -3,10 +3,17 @@
   "WorkspaceRootPath": "D:\\GitHub\\ecommerce\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\seller\\dashboard.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\seller\\product\\add.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\admin\\dashboard.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\models\\sellerproductdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|d:\\github\\ecommerce\\models\\productmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|solutionrelative:models\\productmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -16,7 +23,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -41,27 +48,53 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Dashboard.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Admin\\Dashboard.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Admin\\Dashboard.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Admin\\Dashboard.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Admin\\Dashboard.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T12:01:59.141Z",
+              "Title": "ProductService.cs",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Services\\ProductService.cs",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Services\\ProductService.cs",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Services\\ProductService.cs",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Services\\ProductService.cs",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAIwE8AAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-03T12:03:06.488Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ProductModel.cs",
+              "DocumentMoniker": "D:\\GitHub\\ecommerce\\Models\\ProductModel.cs",
+              "RelativeDocumentMoniker": "Models\\ProductModel.cs",
+              "ToolTip": "D:\\GitHub\\ecommerce\\Models\\ProductModel.cs",
+              "RelativeToolTip": "Models\\ProductModel.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAA2wCMAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-03T11:55:06.114Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SellerProductDto.cs",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Models\\SellerProductDto.cs",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Models\\SellerProductDto.cs",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Models\\SellerProductDto.cs",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Models\\SellerProductDto.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAwwCMAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-03T11:54:56.341Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Dashboard.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Seller\\Dashboard.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Seller\\Dashboard.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Seller\\Dashboard.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Seller\\Dashboard.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAeAAAAAAAAAA==",
+              "Title": "Add.razor",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Seller\\Product\\Add.razor",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Seller\\Product\\Add.razor",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Seller\\Product\\Add.razor",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Seller\\Product\\Add.razor",
+              "ViewState": "AgIAAFcAAAAAAAAAAAAAAHMAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T12:01:52.169Z",
+              "WhenOpened": "2025-11-03T11:51:51.473Z",
               "EditorCaption": ""
             }
           ]

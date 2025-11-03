@@ -85,14 +85,24 @@ namespace ecommerce.Controllers
 
 
 
-
-        // GET: api/Product
-        [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        [HttpGet("all")]
+        public async Task<IActionResult> GetMyProductsAsync()
         {
-            var products = await _productRepository.GetAllAsync();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+            var products = await _productRepository.GetProductBySellerIdAsync(userId);
             return Ok(products);
         }
+        // GET: api/Product
+        //[HttpGet("all")]
+        //public async Task<IActionResult> GetAllProducts()
+        //{
+        //    //var products = await _productRepository.GetAllAsync();
+        //    //return Ok(products);
+        //}
 
         // GET: api/Product/{id}
         [HttpGet("{id}")]

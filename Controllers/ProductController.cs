@@ -16,12 +16,18 @@ namespace ecommerce.Controllers
         private readonly IProductRepository _productRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ICategoryRepository _category;
+        private readonly IWebHostEnvironment _env;
 
-        public ProductController(IProductRepository productRepository, UserManager<ApplicationUser> userManager, ICategoryRepository categoryRepository)
+
+        public ProductController(IProductRepository productRepository, 
+            UserManager<ApplicationUser> userManager, 
+            ICategoryRepository categoryRepository,
+            IWebHostEnvironment env)
         {
             _productRepository = productRepository;
             _userManager = userManager;
             _category = categoryRepository;
+            _env = env;
         }
 
 
@@ -75,6 +81,13 @@ namespace ecommerce.Controllers
         }
 
 
+        // GET: api/Product
+        //[HttpGet("all")]
+        //public async Task<IActionResult> GetAllProducts()
+        //{
+        //    //var products = await _productRepository.GetAllAsync();
+        //    //return Ok(products);
+        //}
 
 
 
@@ -84,7 +97,7 @@ namespace ecommerce.Controllers
 
 
 
-
+        // seller all their products
         [HttpGet("all")]
         public async Task<IActionResult> GetMyProductsAsync()
         {
@@ -96,14 +109,7 @@ namespace ecommerce.Controllers
             var products = await _productRepository.GetProductBySellerIdAsync(userId);
             return Ok(products);
         }
-        // GET: api/Product
-        //[HttpGet("all")]
-        //public async Task<IActionResult> GetAllProducts()
-        //{
-        //    //var products = await _productRepository.GetAllAsync();
-        //    //return Ok(products);
-        //}
-
+  
         // GET: api/Product/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(string id)
@@ -120,44 +126,115 @@ namespace ecommerce.Controllers
 
 
 
-
-        // POST: api/Product
-        // admin
-
-        [HttpPost]
-        public async Task<IActionResult> CreateProduct(ProductModel product)
+        // product create
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateProduct([FromBody] SellerProductDto product)
         {
-            //product.Id = Guid.NewGuid().ToString();
-            if (product == null)
-                return BadRequest("Invalid product data.");
-            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = await _userManager.FindByIdAsync(product.SellerId);
-            if (user == null)
-                return BadRequest("Invalid user");
-            var catagory = await _category.FindByIdAsync(product.CategoryId);
-            if (catagory == null)
-                return BadRequest("Invalid Category");
-
-            if(product.Discounts != null)
+            try
             {
-                foreach (var discount in product.Discounts)
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized("Unauthorized access.");
+
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                    return Unauthorized("Invalid seller account.");
+
+                if (product == null)
+                    return BadRequest("Invalid product data.");
+
+                if (string.IsNullOrWhiteSpace(product.Name))
+                    return BadRequest("Product name is required.");
+
+                if (product.Price <= 0)
+                    return BadRequest("Product price must be greater than zero.");
+
+                // Handle base64 images
+                var imageUrls = new List<string>();
+                var uploadPath = Path.Combine(_env.WebRootPath, "images", "products");
+                if (!Directory.Exists(uploadPath))
+                    Directory.CreateDirectory(uploadPath);
+
+                if (product.Images != null && product.Images.Any())
                 {
-                    if (string.IsNullOrEmpty(discount.Id) || discount.Id == Guid.Empty.ToString())
+                    foreach (var base64Image in product.Images)
                     {
-                        discount.Id = Guid.NewGuid().ToString();
-                        discount.ProductId = product.Id;
+                        var base64Data = base64Image.Contains(",")
+                            ? base64Image.Split(',')[1]
+                            : base64Image;
+
+                        var bytes = Convert.FromBase64String(base64Data);
+                        var fileName = $"{Guid.NewGuid()}.webp";
+                        var filePath = Path.Combine(uploadPath, fileName);
+                        await System.IO.File.WriteAllBytesAsync(filePath, bytes);
+
+                        var relativeUrl = $"{Request.Scheme}://{Request.Host}/images/products/{fileName}";
+                        imageUrls.Add(relativeUrl);
                     }
                 }
+
+                var newProduct = new ProductModel
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    SellerId = userId,
+                    Name = product.Name.Trim(),
+                    Description = product.Description?.Trim(),
+                    CategoryId = product.CategoryId,
+                    Price = product.Price,
+                    Attributes = product.Attributes ?? new(),
+                    Images = imageUrls,
+                    Tags = product.Tags?.Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).ToList() ?? new(),
+                    StockQuantity = product.StockQuantity,
+                    Sold = 0,
+                    Discounts = new(),
+                    IsNew = product.IsNew,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    RestockDate = product.RestockDate
+                };
+
+                // Handle multiple discounts
+                if (product.Discounts?.Any() == true)
+                {
+                    var duplicateCodes = product.Discounts
+                        .GroupBy(d => d.Code)
+                        .Where(g => g.Count() > 1)
+                        .Select(g => g.Key)
+                        .ToList();
+
+                    if (duplicateCodes.Any())
+                        return BadRequest($"Duplicate discount codes found: {string.Join(", ", duplicateCodes)}");
+
+                    foreach (var d in product.Discounts)
+                    {
+                        if (d.ValidTo <= d.ValidFrom)
+                            return BadRequest($"Invalid discount period for code '{d.Code}'.");
+
+                        newProduct.Discounts.Add(new Models.Discount
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Code = d.Code,
+                            Percentage = d.Percentage,
+                            ValidFrom = d.ValidFrom,
+                            ValidTo = d.ValidTo,
+                            ProductId = newProduct.Id,
+                            IsActive = d.IsActive &&
+                                       d.ValidFrom <= DateTime.UtcNow &&
+                                       d.ValidTo >= DateTime.UtcNow
+                        });
+                    }
+                }
+
+                await _productRepository.AddAsync(newProduct);
+                return Ok();
             }
-
-            product.CreatedAt = DateTime.UtcNow;
-            product.UpdatedAt = DateTime.UtcNow;
-            product.SellerId = user.Id.ToString();
-            product.CategoryId = catagory.Id;
-
-            await _productRepository.AddAsync(product);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.Id.ToString() }, product);
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An internal error occurred: {ex.Message}");
+            }
         }
+
+
 
         // PUT: api/Product/{id}
         [HttpPut("{id}")]

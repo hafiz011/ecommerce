@@ -667,7 +667,7 @@
         }
       }
     },
-    "/api/Product": {
+    "/api/Product/create": {
       "post": {
         "tags": [
           "Product"
@@ -676,17 +676,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProductModel"
+                "$ref": "#/components/schemas/SellerProductDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProductModel"
+                "$ref": "#/components/schemas/SellerProductDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ProductModel"
+                "$ref": "#/components/schemas/SellerProductDto"
               }
             }
           }
@@ -866,6 +866,39 @@
         "additionalProperties": false
       },
       "Discount": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "percentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "validTo": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "productId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiscountDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -1102,6 +1135,83 @@
             "nullable": true
           },
           "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SellerProductDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryId": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "stockQuantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sold": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "discounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscountDto"
+            },
+            "nullable": true
+          },
+          "isNew": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "restockDate": {
             "type": "string",
             "format": "date-time"
           }

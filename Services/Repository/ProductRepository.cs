@@ -2,6 +2,7 @@
 using ecommerce.Models;
 using ecommerce.Models.Dtos;
 using ecommerce.Services.Interface;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -42,7 +43,7 @@ namespace ecommerce.Services.Repository
             await _products.DeleteOneAsync(p => p.Id == id);
         }
 
-
+         
 
         // Page by page (no filters)
         public async Task<(List<ProductDto> items, int total)> GetPagedAsync(int page, int pageSize)
@@ -126,7 +127,6 @@ namespace ecommerce.Services.Repository
             var productDtos = items.Select(p =>
             {
                 var activeDiscount = p.Discounts?.FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
-                var discountPercent = activeDiscount?.Percentage ?? 0;
                 // Calculate average rating safely
                 double averageRating = 0;
                 if (p.Review != null && p.Review.Count > 0)
@@ -149,8 +149,8 @@ namespace ecommerce.Services.Repository
                     Tags = p.Tags ?? new List<string>(),
                     Images = p.Images ?? new List<string>(),
                     HasActiveDiscount = activeDiscount != null,
-                    DiscountPercent = discountPercent,
-                    FinalPrice = p.Price - (discountPercent * p.Price / 100)
+                    DiscountPercent = activeDiscount?.Percentage ?? 0,
+                    FinalPrice = p.Price - ((activeDiscount?.Percentage ?? 0) * p.Price / 100)
                 };
             }).ToList();
             return (productDtos, total);
@@ -308,14 +308,16 @@ namespace ecommerce.Services.Repository
         //    return (productDtos, total);
         //}
 
-
+        
         public async Task<List<ProductDto>> GetProductBySellerIdAsync(string userId)
         {
             var products = await _products.Find(p => p.SellerId == userId).ToListAsync();
             return products.Select(p =>
             {
                 var now = DateTime.UtcNow;
-                var activeDiscount = p.Discounts?.FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
+                var activeDiscount = p.Discounts?
+                    .FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
+
                 // Calculate average rating safely
                 double averageRating = 0;
                 if (p.Review != null && p.Review.Count > 0)
@@ -344,6 +346,6 @@ namespace ecommerce.Services.Repository
             }).ToList();
         }
 
-
+         
     }
 }

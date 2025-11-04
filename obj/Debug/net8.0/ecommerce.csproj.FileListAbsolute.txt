@@ -169,6 +169,7 @@ D:\MySite\Update\app\ecommerce\obj\Debug\net8.0\ecommerce.genruntimeconfig.cache
 D:\MySite\Update\app\ecommerce\obj\Debug\net8.0\ref\ecommerce.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\appsettings.Development.json
 D:\GitHub\ecommerce\bin\Debug\net8.0\appsettings.json
+D:\GitHub\ecommerce\bin\Debug\net8.0\ecommerce.staticwebassets.runtime.json
 D:\GitHub\ecommerce\bin\Debug\net8.0\ecommerce.staticwebassets.endpoints.json
 D:\GitHub\ecommerce\bin\Debug\net8.0\ecommerce.exe
 D:\GitHub\ecommerce\bin\Debug\net8.0\ecommerce.deps.json
@@ -178,7 +179,9 @@ D:\GitHub\ecommerce\bin\Debug\net8.0\ecommerce.pdb
 D:\GitHub\ecommerce\bin\Debug\net8.0\AspNetCore.Identity.MongoDbCore.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\AWSSDK.Core.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\AWSSDK.SecurityToken.dll
+D:\GitHub\ecommerce\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\DnsClient.dll
+D:\GitHub\ecommerce\bin\Debug\net8.0\MailKit.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
@@ -187,6 +190,7 @@ D:\GitHub\ecommerce\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\Microsoft.OpenApi.dll
+D:\GitHub\ecommerce\bin\Debug\net8.0\MimeKit.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\MongoDB.Bson.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\MongoDB.Driver.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\MongoDB.Driver.Core.dll
@@ -199,10 +203,12 @@ D:\GitHub\ecommerce\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+D:\GitHub\ecommerce\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\ZstdSharp.dll
 D:\GitHub\ecommerce\bin\Debug\net8.0\runtimes\linux\native\libmongocrypt.so
 D:\GitHub\ecommerce\bin\Debug\net8.0\runtimes\osx\native\libmongocrypt.dylib
 D:\GitHub\ecommerce\bin\Debug\net8.0\runtimes\win\native\mongocrypt.dll
+D:\GitHub\ecommerce\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 D:\GitHub\ecommerce\obj\Debug\net8.0\ecommerce.csproj.AssemblyReference.cache
 D:\GitHub\ecommerce\obj\Debug\net8.0\ecommerce.GeneratedMSBuildEditorConfig.editorconfig
 D:\GitHub\ecommerce\obj\Debug\net8.0\ecommerce.AssemblyInfoInputs.cache
@@ -223,9 +229,3 @@ D:\GitHub\ecommerce\obj\Debug\net8.0\refint\ecommerce.dll
 D:\GitHub\ecommerce\obj\Debug\net8.0\ecommerce.pdb
 D:\GitHub\ecommerce\obj\Debug\net8.0\ecommerce.genruntimeconfig.cache
 D:\GitHub\ecommerce\obj\Debug\net8.0\ref\ecommerce.dll
-D:\GitHub\ecommerce\bin\Debug\net8.0\ecommerce.staticwebassets.runtime.json
-D:\GitHub\ecommerce\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
-D:\GitHub\ecommerce\bin\Debug\net8.0\MailKit.dll
-D:\GitHub\ecommerce\bin\Debug\net8.0\MimeKit.dll
-D:\GitHub\ecommerce\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
-D:\GitHub\ecommerce\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll

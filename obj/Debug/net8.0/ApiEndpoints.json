@@ -296,28 +296,28 @@
   },
   {
     "ContainingType": "ecommerce.Controllers.ProductController",
-    "Method": "CreateProduct",
-    "RelativePath": "api/Product",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "product",
-        "Type": "ecommerce.Models.ProductModel",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ecommerce.Controllers.ProductController",
     "Method": "GetMyProductsAsync",
     "RelativePath": "api/Product/all",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.ProductController",
+    "Method": "CreateProduct",
+    "RelativePath": "api/Product/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "product",
+        "Type": "ecommerce.Models.Dtos.SellerProductDto",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

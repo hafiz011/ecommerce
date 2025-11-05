@@ -306,7 +306,7 @@
   },
   {
     "ContainingType": "ecommerce.Controllers.ProductController",
-    "Method": "CreateProduct",
+    "Method": "Create",
     "RelativePath": "api/Product/create",
     "HttpMethod": "POST",
     "IsController": true,
@@ -384,24 +384,8 @@
   },
   {
     "ContainingType": "ecommerce.Controllers.ProductController",
-    "Method": "GetProductById",
-    "RelativePath": "api/Product/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ecommerce.Controllers.ProductController",
-    "Method": "UpdateProduct",
-    "RelativePath": "api/Product/{id}",
+    "Method": "Update",
+    "RelativePath": "api/Product/update/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -412,8 +396,24 @@
         "IsRequired": true
       },
       {
-        "Name": "product",
-        "Type": "ecommerce.Models.ProductModel",
+        "Name": "dto",
+        "Type": "ecommerce.Models.Dtos.SellerProductDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.ProductController",
+    "Method": "GetProductById",
+    "RelativePath": "api/Product/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
         "IsRequired": true
       }
     ],

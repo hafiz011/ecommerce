@@ -128,7 +128,7 @@ namespace ecommerce.Controllers
 
         // product create
         [HttpPost("create")]
-        public async Task<IActionResult> CreateProduct([FromBody] SellerProductDto product)
+        public async Task<IActionResult> Create([FromBody] SellerProductDto product)
         {
             try
             {
@@ -218,9 +218,7 @@ namespace ecommerce.Controllers
                             ValidFrom = d.ValidFrom,
                             ValidTo = d.ValidTo,
                             ProductId = newProduct.Id,
-                            IsActive = d.IsActive &&
-                                       d.ValidFrom <= DateTime.UtcNow &&
-                                       d.ValidTo >= DateTime.UtcNow
+                            IsActive = d.IsActive  && d.ValidTo >= DateTime.UtcNow.Date
                         });
                     }
                 }
@@ -236,33 +234,188 @@ namespace ecommerce.Controllers
 
 
 
-        // PUT: api/Product/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(string id, ProductModel product)
+        // PUT: api/Product/update/{id}
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] SellerProductDto dto)
         {
-            if (id == null)
-                return BadRequest("Invalid product ID.");
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized("Unauthorized access.");
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                    return Unauthorized("Invalid seller account.");
+                if (string.IsNullOrEmpty(id))
+                    return BadRequest("Invalid product ID.");
+                if (dto == null)
+                    return BadRequest("Invalid product data.");
+                if (string.IsNullOrWhiteSpace(dto.Name))
+                    return BadRequest("Product name is required.");
+                if (dto.Price <= 0)
+                    return BadRequest("Product price must be greater than zero.");
 
-            var existingProduct = await _productRepository.GetByIdAsync(id);
-            if (existingProduct == null)
-                return NotFound("Product not found.");
+                var existingProduct = await _productRepository.GetByIdAsync(id);
+                if (existingProduct == null)
+                    return NotFound("Product not found.");
 
-            existingProduct.Name = product.Name;
-            existingProduct.Description = product.Description;
-            existingProduct.CategoryId = product.CategoryId;
-            existingProduct.Price = product.Price;
-            existingProduct.Images = product.Images;  //test
-            existingProduct.Tags = product.Tags;
-            existingProduct.StockQuantity = product.StockQuantity;
-            existingProduct.Discounts = product.Discounts;
-            existingProduct.SellerId = product.SellerId; //test
-            existingProduct.IsNew = product.IsNew;
-            existingProduct.Attributes = product.Attributes;
-            existingProduct.UpdatedAt = DateTime.UtcNow;
+                // Update basic fields
+                existingProduct.Name = dto.Name.Trim();
+                existingProduct.Description = dto.Description?.Trim();
+                existingProduct.CategoryId = dto.CategoryId;
+                existingProduct.Price = dto.Price;
+                existingProduct.StockQuantity = dto.StockQuantity;
+                existingProduct.IsNew = dto.IsNew;
+                existingProduct.Attributes = dto.Attributes ?? new();
+                existingProduct.Tags = dto.Tags?.Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).ToList() ?? new();
+                existingProduct.RestockDate = dto.RestockDate;
+                existingProduct.UpdatedAt = DateTime.UtcNow;
 
-            await _productRepository.UpdateAsync(id, existingProduct);
-            return NoContent();
+                // Handle images: Process new base64, preserve URLs, delete removed files
+                var uploadPath = Path.Combine(_env.WebRootPath, "images", "products");
+                if (!Directory.Exists(uploadPath))
+                    Directory.CreateDirectory(uploadPath);
+
+                var oldImageUrls = existingProduct.Images ?? new List<string>();
+                var newImageUrls = new List<string>();
+
+                if (dto.Images != null && dto.Images.Any())
+                {
+                    foreach (var img in dto.Images)
+                    {
+                        if (string.IsNullOrWhiteSpace(img))
+                            continue;
+
+                        if (img.StartsWith("http")) // Existing URL, preserve
+                        {
+                            newImageUrls.Add(img);
+                        }
+                        else // Base64, process and save
+                        {
+                            var base64Data = img.Contains(",")
+                                ? img.Split(',')[1]
+                                : img;
+                            var bytes = Convert.FromBase64String(base64Data);
+                            var fileName = $"{Guid.NewGuid()}.webp";
+                            var filePath = Path.Combine(uploadPath, fileName);
+                            await System.IO.File.WriteAllBytesAsync(filePath, bytes);
+                            var relativeUrl = $"{Request.Scheme}://{Request.Host}/images/products/{fileName}";
+                            newImageUrls.Add(relativeUrl);
+                        }
+                    }
+                }
+
+                // Delete files for removed images
+                foreach (var oldUrl in oldImageUrls)
+                {
+                    if (!newImageUrls.Contains(oldUrl))
+                    {
+                        var fileName = Path.GetFileName(oldUrl);
+                        if (!string.IsNullOrEmpty(fileName))
+                        {
+                            var oldFilePath = Path.Combine(uploadPath, fileName);
+                            if (System.IO.File.Exists(oldFilePath))
+                                System.IO.File.Delete(oldFilePath);
+                        }
+                    }
+                }
+
+                existingProduct.Images = newImageUrls;
+
+                // Handle discounts: Replace list, validate duplicates and dates
+                existingProduct.Discounts.Clear();
+                if (dto.Discounts?.Any(d => d != null) == true)
+                {
+                    var duplicateCodes = dto.Discounts
+                        .Where(d => d != null)
+                        .GroupBy(d => d.Code)
+                        .Where(g => g.Count() > 1)
+                        .Select(g => g.Key)
+                        .ToList();
+                    if (duplicateCodes.Any())
+                        return BadRequest($"Duplicate discount codes found: {string.Join(", ", duplicateCodes)}");
+
+                    foreach (var d in dto.Discounts.Where(d => d != null))
+                    {
+                        if (d.ValidTo <= d.ValidFrom)
+                            return BadRequest($"Invalid discount period for code '{d.Code}'.");
+                        existingProduct.Discounts.Add(new Models.Discount
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Code = d.Code,
+                            Percentage = d.Percentage,
+                            ValidFrom = d.ValidFrom,
+                            ValidTo = d.ValidTo,
+                            ProductId = id,
+                            IsActive = d.IsActive && d.ValidTo >= DateTime.UtcNow.Date
+                        });
+                    }
+                }
+
+                // Keep existing values
+                existingProduct.SellerId = existingProduct.SellerId; // Unchanged
+                existingProduct.CreatedAt = existingProduct.CreatedAt; // Unchanged
+                existingProduct.Sold = existingProduct.Sold; // Unchanged
+
+                await _productRepository.UpdateAsync(id, existingProduct);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An internal error occurred: {ex.Message}");
+            }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // PUT: api/Product/update/{id}
+        //[HttpPut("update/{id}")]
+        //public async Task<IActionResult> UpdateProduct(string id, ProductModel product)
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    if (string.IsNullOrEmpty(userId))
+        //        return Unauthorized("Unauthorized access.");
+
+        //    var user = await _userManager.FindByIdAsync(userId);
+        //    if (user == null)
+        //        return Unauthorized("Invalid seller account.");
+
+        //    if (id == null)
+        //        return BadRequest("Invalid product ID.");
+
+        //    var existingProduct = await _productRepository.GetByIdAsync(id);
+        //    if (existingProduct == null)
+        //        return NotFound("Product not found.");
+
+        //    existingProduct.Name = product.Name;
+        //    existingProduct.Description = product.Description;
+        //    existingProduct.CategoryId = product.CategoryId;
+        //    existingProduct.Price = product.Price;
+        //    existingProduct.Images = product.Images;  //test
+        //    existingProduct.Tags = product.Tags;
+        //    existingProduct.StockQuantity = product.StockQuantity;
+        //    existingProduct.Discounts = product.Discounts;
+        //    existingProduct.SellerId = product.SellerId; //test
+        //    existingProduct.IsNew = product.IsNew;
+        //    existingProduct.Attributes = product.Attributes;
+        //    existingProduct.UpdatedAt = DateTime.UtcNow;
+
+        //    await _productRepository.UpdateAsync(id, existingProduct);
+        //    return NoContent();
+        //}
 
         // DELETE: api/Product/{id}
         [HttpDelete("{id}")]

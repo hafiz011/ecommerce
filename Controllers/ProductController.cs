@@ -368,55 +368,6 @@ namespace ecommerce.Controllers
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // PUT: api/Product/update/{id}
-        //[HttpPut("update/{id}")]
-        //public async Task<IActionResult> UpdateProduct(string id, ProductModel product)
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    if (string.IsNullOrEmpty(userId))
-        //        return Unauthorized("Unauthorized access.");
-
-        //    var user = await _userManager.FindByIdAsync(userId);
-        //    if (user == null)
-        //        return Unauthorized("Invalid seller account.");
-
-        //    if (id == null)
-        //        return BadRequest("Invalid product ID.");
-
-        //    var existingProduct = await _productRepository.GetByIdAsync(id);
-        //    if (existingProduct == null)
-        //        return NotFound("Product not found.");
-
-        //    existingProduct.Name = product.Name;
-        //    existingProduct.Description = product.Description;
-        //    existingProduct.CategoryId = product.CategoryId;
-        //    existingProduct.Price = product.Price;
-        //    existingProduct.Images = product.Images;  //test
-        //    existingProduct.Tags = product.Tags;
-        //    existingProduct.StockQuantity = product.StockQuantity;
-        //    existingProduct.Discounts = product.Discounts;
-        //    existingProduct.SellerId = product.SellerId; //test
-        //    existingProduct.IsNew = product.IsNew;
-        //    existingProduct.Attributes = product.Attributes;
-        //    existingProduct.UpdatedAt = DateTime.UtcNow;
-
-        //    await _productRepository.UpdateAsync(id, existingProduct);
-        //    return NoContent();
-        //}
-
         // DELETE: api/Product/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(string id)

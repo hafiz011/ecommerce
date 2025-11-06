@@ -79,28 +79,53 @@ builder.Services.AddScoped<IUserLogsRepository, UserLogsRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IShoppingCartRepository , ShoppingCartRepository>();
+builder.Services.AddScoped<EmailService>();
 
+//var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy(name: MyAllowSpecificOrigins,
+//        policy =>
+//        {
+//            policy.WithOrigins("http://localhost:5051") // Example: Blazor WebAssembly dev port
+//                  .AllowAnyHeader()
+//                  .AllowAnyMethod()
+//                  .AllowCredentials();
+//        });
+//});
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:5051") // Example: Blazor WebAssembly dev port
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
-        });
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
-
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
+builder.Services.AddTransient<MongoDbSeeder>();
+
+
+
+
 var app = builder.Build();
+
+
+
+// Seed Data
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<MongoDbSeeder>();
+    await seeder.SeedAsync();
+}
 
 // Configure middleware to handle forwarded headers
 app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -118,7 +143,7 @@ if (app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

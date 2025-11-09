@@ -574,18 +574,6 @@
         }
       }
     },
-    "/api/Product/all": {
-      "get": {
-        "tags": [
-          "Product"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
     "/api/Product/{id}": {
       "get": {
         "tags": [
@@ -620,6 +608,18 @@
               "type": "string"
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Product/all": {
+      "get": {
+        "tags": [
+          "Product"
         ],
         "responses": {
           "200": {

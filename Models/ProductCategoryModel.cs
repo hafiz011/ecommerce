@@ -13,5 +13,6 @@ namespace ecommerce.Models
         public string ImagePath { get; set; }
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string SellerId { get; set; }
     }
 }

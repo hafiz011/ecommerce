@@ -76,3 +76,4 @@ wwwroot\images\products\5a818eca-0664-4707-adaf-5d6a6ea38849.webp
 wwwroot\images\products\60db2d63-1dc6-447e-8a7c-a70a8e718b80.webp
 wwwroot\images\products\6ea2ec2d-0d29-424a-bc95-36614206c406.webp
 wwwroot\images\products\bf469d28-7f2a-48ed-9f90-ec69bc37c1c1.webp
+wwwroot\images\category\381b977c-5c60-4fc7-93b2-19b831617b37.webp

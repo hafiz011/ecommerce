@@ -40,8 +40,7 @@ namespace ecommerce.Controllers
                 return BadRequest("Invalid product or quantity.");
 
             // Retrieve the authenticated user's ID from claims
-            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
-            var userId = "01fa0bba-f32b-4327-adc9-893a8ef38d00";
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized("User not authenticated.");
 
@@ -53,7 +52,6 @@ namespace ecommerce.Controllers
             var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId)
                        ?? new ShoppingCartModel
                        {
-                           //Id = Guid.NewGuid().ToString(),
                            UserId = userId,
                            CreatedAt = DateTime.UtcNow,
                            UpdatedAt = DateTime.UtcNow
@@ -73,14 +71,17 @@ namespace ecommerce.Controllers
                 cart.Items.Add(new CartItem
                 {
                     ProductId = request.ProductId,
+                    ProductName = product.Name,
                     Quantity = request.Quantity,
                     Price = product.Price * request.Quantity
                 });
             }
 
             // Update cart's total amount and save
+            cart.Id = ObjectId.GenerateNewId().ToString();
             cart.TotalAmount = cart.Items.Sum(i => i.Price);
             cart.UpdatedAt = DateTime.UtcNow;
+            cart.SellerId = product.SellerId;
             await _shoppingCartRepository.UpsertCartAsync(cart);
 
             return Ok(cart);
@@ -92,8 +93,7 @@ namespace ecommerce.Controllers
         [HttpGet("GetCart")]
         public async Task<IActionResult> GetCart()
         {
-            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = "01fa0bba-f32b-4327-adc9-893a8ef38d00";
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized("User not authenticated.");
 
@@ -109,8 +109,7 @@ namespace ecommerce.Controllers
         [HttpDelete("RemoveFromCart/{productId}")]
         public async Task<IActionResult> RemoveFromCart(string productId)
         {
-            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = "01fa0bba-f32b-4327-adc9-893a8ef38d00";
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized("User not authenticated.");
@@ -135,8 +134,7 @@ namespace ecommerce.Controllers
         [HttpDelete("ClearCart")]
         public async Task<IActionResult> ClearCart()
         {
-            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = "01fa0bba-f32b-4327-adc9-893a8ef38d00";
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized("User not authenticated.");
 

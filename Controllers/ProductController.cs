@@ -1,6 +1,7 @@
 ﻿using ecommerce.Models;
 using ecommerce.Models.Dtos;
 using ecommerce.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,7 @@ namespace ecommerce.Controllers
         }
 
 
-
+        // need configerd to get all products using seller id
         // view page by page
         [HttpGet("paged")]
         public async Task<IActionResult> GetPaged(
@@ -49,7 +50,7 @@ namespace ecommerce.Controllers
             });
         }
 
-
+        // need configerd to get product by filter and paged using seller id
         [HttpGet("filterpaged")]
         public async Task<IActionResult> GetFilteredPaged(
              [FromQuery] string? category,
@@ -81,35 +82,7 @@ namespace ecommerce.Controllers
         }
 
 
-        // GET: api/Product
-        //[HttpGet("all")]
-        //public async Task<IActionResult> GetAllProducts()
-        //{
-        //    //var products = await _productRepository.GetAllAsync();
-        //    //return Ok(products);
-        //}
-
-
-
-
-
-
-
-
-
-        // seller all their products
-        [HttpGet("all")]
-        public async Task<IActionResult> GetMyProductsAsync()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-            var products = await _productRepository.GetProductBySellerIdAsync(userId);
-            return Ok(products);
-        }
-  
+        // need configerd to get product by id and seller id
         // GET: api/Product/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(string id)
@@ -126,7 +99,26 @@ namespace ecommerce.Controllers
 
 
 
+
+
+
+
+        // seller all their products
+        [Authorize(Roles = "Seller")]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetMyProductsAsync()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+            var products = await _productRepository.GetProductBySellerIdAsync(userId);
+            return Ok(products);
+        }
+
         // product create
+        [Authorize(Roles = "Seller")]
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] SellerProductDto product)
         {
@@ -235,6 +227,7 @@ namespace ecommerce.Controllers
 
 
         // PUT: api/Product/update/{id}
+        [Authorize(Roles = "Seller")]
         [HttpPut("update/{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] SellerProductDto dto)
         {
@@ -369,6 +362,7 @@ namespace ecommerce.Controllers
 
 
         // DELETE: api/Product/{id}
+        [Authorize(Roles = "Seller")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(string id)
         {

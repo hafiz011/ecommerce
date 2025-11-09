@@ -5,6 +5,8 @@ namespace ecommerce.Models
 {
     public class Order
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
         public string UserId { get; set; }
@@ -22,6 +24,7 @@ namespace ecommerce.Models
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
         public DateTime UpdatedAt { get; set; }
+        public string SellerId { get; set; }
     }
 
     public class ShippingAddress

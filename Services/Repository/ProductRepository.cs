@@ -60,6 +60,7 @@ namespace ecommerce.Services.Repository
             var productDtos = items.Select(p =>
             {
                 var activeDiscount = p.Discounts?.FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
+                var DiscountPrice = p.Price - ((activeDiscount?.Percentage ?? 0) * p.Price / 100);
                 // Calculate average rating safely
                 double averageRating = 0;
                 if (p.Review != null && p.Review.Count > 0)
@@ -83,7 +84,8 @@ namespace ecommerce.Services.Repository
                     Images = p.Images ?? new List<string>(),
                     HasActiveDiscount = activeDiscount != null,
                     DiscountPercent = activeDiscount?.Percentage ?? 0,
-                    FinalPrice = p.Price - ((activeDiscount?.Percentage ?? 0) * p.Price / 100)
+                    FinalPrice = Math.Floor(DiscountPrice) + ((DiscountPrice % 1) >= 0.5m ? 1 : 0)
+
                 };
             }).ToList();
             return (productDtos, total);
@@ -127,6 +129,7 @@ namespace ecommerce.Services.Repository
             var productDtos = items.Select(p =>
             {
                 var activeDiscount = p.Discounts?.FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
+                var DiscountPrice = p.Price - ((activeDiscount?.Percentage ?? 0) * p.Price / 100);
                 // Calculate average rating safely
                 double averageRating = 0;
                 if (p.Review != null && p.Review.Count > 0)
@@ -150,7 +153,7 @@ namespace ecommerce.Services.Repository
                     Images = p.Images ?? new List<string>(),
                     HasActiveDiscount = activeDiscount != null,
                     DiscountPercent = activeDiscount?.Percentage ?? 0,
-                    FinalPrice = p.Price - ((activeDiscount?.Percentage ?? 0) * p.Price / 100)
+                    FinalPrice = Math.Floor(DiscountPrice) + ((DiscountPrice % 1) >= 0.5m ? 1 : 0)
                 };
             }).ToList();
             return (productDtos, total);
@@ -315,6 +318,8 @@ namespace ecommerce.Services.Repository
                 var activeDiscount = p.Discounts?
                     .FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
 
+                var DiscountPrice = p.Price - ((activeDiscount?.Percentage ?? 0) * p.Price / 100);
+
                 // Calculate average rating safely
                 double averageRating = 0;
                 if (p.Review != null && p.Review.Count > 0)
@@ -338,7 +343,7 @@ namespace ecommerce.Services.Repository
                     Images = p.Images ?? new List<string>(),
                     HasActiveDiscount = activeDiscount != null,
                     DiscountPercent = activeDiscount?.Percentage ?? 0,
-                    FinalPrice = p.Price - ((activeDiscount?.Percentage ?? 0) * p.Price / 100)
+                    FinalPrice = Math.Floor(DiscountPrice) + ((DiscountPrice % 1) >= 0.5m ? 1 : 0)
                 };
             }).ToList();
         }

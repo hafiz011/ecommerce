@@ -1,6 +1,5 @@
 ﻿using ecommerce.Models;
 using ecommerce.Services.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -31,7 +30,11 @@ namespace ecommerce.Controllers
             public string ProductId { get; set; }
             public int Quantity { get; set; }
         }
-
+        public class UpdateQuantityRequest
+        {
+            public string ProductId { get; set; }
+            public int Quantity { get; set; }
+        }
 
         [HttpPost("AddToCart")]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartRequest request)
@@ -40,7 +43,7 @@ namespace ecommerce.Controllers
                 return BadRequest("Invalid product or quantity.");
 
             // Retrieve the authenticated user's ID from claims
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized("User not authenticated.");
 
@@ -48,13 +51,27 @@ namespace ecommerce.Controllers
             if (product == null)
                 return NotFound("Product not found.");
 
+            var now = DateTime.UtcNow;
+            var activeDiscount = product.Discounts?
+                .FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
+
+            // Calculate discounted price
+            var FinalPrice = product.Price - ((activeDiscount?.Percentage ?? 0) * product.Price / 100);
+
+            // Custom rounding logic:
+            // if decimal part >= 0.5 → round up, else round down
+            //var roundedPrice = Math.Floor(FinalPrice) + (FinalPrice - Math.Floor(FinalPrice) >= 0.5m ? 1 : 0);
+            //FinalPrice = roundedPrice;
+            FinalPrice = Math.Floor(FinalPrice) + ((FinalPrice % 1) >= 0.5m ? 1 : 0);
+
+
             // Get or create the user's shopping cart
             var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId)
                        ?? new ShoppingCartModel
                        {
+                           Id = ObjectId.GenerateNewId().ToString(),
                            UserId = userId,
-                           CreatedAt = DateTime.UtcNow,
-                           UpdatedAt = DateTime.UtcNow
+                           CreatedAt = now
                        };
 
             // Check if the product is already in the cart
@@ -63,7 +80,7 @@ namespace ecommerce.Controllers
             {
                 // Update quantity and price
                 existingItem.Quantity += request.Quantity;
-                existingItem.Price = product.Price * existingItem.Quantity;
+                existingItem.Price = FinalPrice * existingItem.Quantity;
             }
             else
             {
@@ -73,14 +90,14 @@ namespace ecommerce.Controllers
                     ProductId = request.ProductId,
                     ProductName = product.Name,
                     Quantity = request.Quantity,
-                    Price = product.Price * request.Quantity
+                    Price = FinalPrice * request.Quantity,
+                    Image = product.Images?.FirstOrDefault() ?? string.Empty
                 });
             }
 
             // Update cart's total amount and save
-            cart.Id = ObjectId.GenerateNewId().ToString();
             cart.TotalAmount = cart.Items.Sum(i => i.Price);
-            cart.UpdatedAt = DateTime.UtcNow;
+            cart.UpdatedAt = now;
             cart.SellerId = product.SellerId;
             await _shoppingCartRepository.UpsertCartAsync(cart);
 
@@ -147,10 +164,50 @@ namespace ecommerce.Controllers
             cart.UpdatedAt = DateTime.UtcNow;
 
             await _shoppingCartRepository.UpsertCartAsync(cart);
-            return Ok("Cart cleared successfully.");
+            return Ok();
         }
 
+        // NEW: Update Quantity
+        [HttpPut("UpdateQuantity")]
+        public async Task<IActionResult> UpdateQuantity([FromBody] UpdateQuantityRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.ProductId) || request.Quantity <= 0)
+                return BadRequest("Invalid product or quantity.");
 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("User not authenticated.");
+
+            var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId);
+            if (cart == null)
+                return NotFound("Cart not found.");
+
+            var item = cart.Items.FirstOrDefault(i => i.ProductId == request.ProductId);
+            if (item == null)
+                return NotFound("Product not found in cart.");
+
+            // Fetch product again for accurate price/discount
+            var product = await _productRepository.GetByIdAsync(request.ProductId);
+            if (product == null)
+                return NotFound("Product not found.");
+
+            var now = DateTime.UtcNow;
+            var activeDiscount = product.Discounts?
+                .FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
+
+            var FinalPrice = product.Price - ((activeDiscount?.Percentage ?? 0) * product.Price / 100);
+            FinalPrice = Math.Floor(FinalPrice) + ((FinalPrice % 1) >= 0.5m ? 1 : 0);
+
+            // Update quantity & recalculate price
+            item.Quantity = request.Quantity;
+            item.Price = FinalPrice * item.Quantity;
+
+            cart.TotalAmount = cart.Items.Sum(i => i.Price);
+            cart.UpdatedAt = DateTime.UtcNow;
+
+            await _shoppingCartRepository.UpsertCartAsync(cart);
+            return Ok(cart);
+        }
 
     }
 }

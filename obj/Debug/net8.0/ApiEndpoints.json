@@ -486,5 +486,21 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.ShoppingCartController",
+    "Method": "UpdateQuantity",
+    "RelativePath": "api/ShoppingCart/UpdateQuantity",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ecommerce.Controllers.ShoppingCartController\u002BUpdateQuantityRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

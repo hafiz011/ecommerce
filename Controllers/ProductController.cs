@@ -94,6 +94,9 @@ namespace ecommerce.Controllers
             if (product == null)
                 return NotFound("Product not found.");
 
+            // Custom rounding logic:
+            product.Price = Math.Floor(product.Price) + (product.Price - Math.Floor(product.Price) >= 0.5m ? 1 : 0);
+
             return Ok(product);
         }
 

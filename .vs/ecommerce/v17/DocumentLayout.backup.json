@@ -7,16 +7,14 @@
       "RelativeMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|solutionrelative:controllers\\shoppingcartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\services\\cartservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\productdetails.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\layout\\header.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|d:\\github\\ecommerce\\models\\shoppingcartmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|solutionrelative:models\\shoppingcartmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\cart.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\services\\cartservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,8 +24,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 7,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ShoppingCartModel.cs",
+              "DocumentMoniker": "D:\\GitHub\\ecommerce\\Models\\ShoppingCartModel.cs",
+              "RelativeDocumentMoniker": "Models\\ShoppingCartModel.cs",
+              "ToolTip": "D:\\GitHub\\ecommerce\\Models\\ShoppingCartModel.cs",
+              "RelativeToolTip": "Models\\ShoppingCartModel.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAgwBkAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-10T11:12:48.351Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
@@ -50,41 +61,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "CartService.cs",
               "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Services\\CartService.cs",
               "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Services\\CartService.cs",
               "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Services\\CartService.cs",
               "RelativeToolTip": "..\\Ecommerce.Client\\Services\\CartService.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAQwBkAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-09T11:46:08.646Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Header.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Layout\\Header.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Layout\\Header.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Layout\\Header.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Layout\\Header.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-09T11:38:56.919Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Cart.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Cart.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Cart.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Cart.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Cart.razor",
-              "ViewState": "AgIAADAAAAAAAAAAAAAAABUAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-09T11:20:51.665Z",
+              "WhenOpened": "2025-11-10T11:01:04.309Z",
               "EditorCaption": ""
             },
             {
@@ -95,22 +80,22 @@
               "RelativeDocumentMoniker": "Controllers\\ShoppingCartController.cs",
               "ToolTip": "D:\\GitHub\\ecommerce\\Controllers\\ShoppingCartController.cs",
               "RelativeToolTip": "Controllers\\ShoppingCartController.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAgwFIAAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAJYAAAAAAAAAAAAkwF0AAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-09T11:14:43.52Z",
+              "WhenOpened": "2025-11-10T11:01:04.332Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ProductDetails.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\ProductDetails.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\ProductDetails.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\ProductDetails.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\ProductDetails.razor",
-              "ViewState": "AgIAAJ8AAAAAAAAAAAAAAKcAAAArAAAAAAAAAA==",
+              "Title": "Cart.razor",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Cart.razor",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Cart.razor",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Cart.razor",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Cart.razor",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAACIAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-09T11:08:22.097Z",
+              "WhenOpened": "2025-11-10T10:58:45.093Z",
               "EditorCaption": ""
             }
           ]

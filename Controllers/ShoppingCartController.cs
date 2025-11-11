@@ -91,14 +91,14 @@ namespace ecommerce.Controllers
                     ProductName = product.Name,
                     Quantity = request.Quantity,
                     Price = FinalPrice * request.Quantity,
-                    Image = product.Images?.FirstOrDefault() ?? string.Empty
+                    Image = product.Images?.FirstOrDefault() ?? string.Empty,
+                    SellerId = product.SellerId
                 });
             }
 
             // Update cart's total amount and save
             cart.TotalAmount = cart.Items.Sum(i => i.Price);
             cart.UpdatedAt = now;
-            cart.SellerId = product.SellerId;
             await _shoppingCartRepository.UpsertCartAsync(cart);
 
             return Ok(cart);

@@ -1,4 +1,5 @@
 ﻿using ecommerce.Models;
+using ecommerce.Models.Dtos;
 using ecommerce.Services.Interface;
 using ecommerce.Services.Repository;
 using Microsoft.AspNetCore.Authorization;
@@ -107,7 +108,7 @@ namespace ecommerce.Controllers
                 {
                     UserId = userId,
                     SellerId = group.Key,
-                    Items = group.Select(i => new OrderItem
+                    Items = group.Select(i => new Models.OrderItem
                     {
                         ProductId = i.ProductId,
                         ProductName = i.ProductName,
@@ -122,7 +123,7 @@ namespace ecommerce.Controllers
                     PaymentMethod = request.PaymentMethod ?? "COD",
                     PaymentStatus = "Pending",
                     OrderStatus = "Processing",
-                    ShippingAddress = new ShippingAddress
+                    ShippingAddress = new Models.ShippingAddress
                     {
                         FullName = request.AddShippingAddress?.FullName ?? "",
                         Phone = request.AddShippingAddress?.Phone ?? "",
@@ -179,21 +180,77 @@ namespace ecommerce.Controllers
 
 
 
-
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetOrdersByUser(string userId)
+        // User gets their own orders
+        [HttpGet("user")]
+        public async Task<IActionResult> GetOrdersByUser()
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("User not authenticated.");
+
             var orders = await _orderRepository.GetOrdersByUserAsync(userId);
             return Ok(orders);
         }
 
+
         [Authorize(Roles = "Seller")]
-        [HttpGet("seller/{sellerId}")]
-        public async Task<IActionResult> GetOrdersBySeller(string sellerId)
+        [HttpGet("orders/{id}")]
+        public async Task<IActionResult> GetOrderById(string id)
         {
-            var orders = await _orderRepository.GetOrdersBySellerAsync(sellerId);
-            return Ok(orders);
+            var order = await _orderRepository.GetOrderByIdAsync(id);
+            if (order == null)
+                return NotFound("Order not found.");
+            return Ok(order);
         }
+
+
+        [Authorize(Roles = "Seller")]
+        [HttpGet("seller")]
+        public async Task<IActionResult> GetOrdersBySeller()
+        {
+            var sellerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(sellerId))
+                return Unauthorized("Seller not authenticated.");
+
+            var orders = await _orderRepository.GetOrdersBySellerAsync(sellerId);
+
+            if (orders == null || !orders.Any())
+                return NotFound("No orders found for this seller.");
+
+            // Map from Order model OrderDto
+            var orderDtos = orders.Select(o => new OrderDto
+            {
+                Id = o.Id,
+                Items = o.Items.Select(i => new Models.Dtos.OrderItem
+                {
+                    ProductId = i.ProductId,
+                    ProductName = i.ProductName,
+                    Price = i.Price,
+                    Quantity = i.Quantity,
+                    Image = i.Image
+                }).ToList(),
+                SubTotal = o.SubTotal,
+                ShippingCost = o.ShippingCost,
+                TotalAmount = o.TotalAmount,
+                PaymentMethod = o.PaymentMethod,
+                PaymentStatus = o.PaymentStatus,
+                OrderStatus = o.OrderStatus,
+                ShippingAddress = new Models.Dtos.ShippingAddress
+                {
+                    FullName = o.ShippingAddress.FullName,
+                    Phone = o.ShippingAddress.Phone,
+                    Email = o.ShippingAddress.Email,
+                    Address = o.ShippingAddress.Address,
+                    City = o.ShippingAddress.City,
+                    Country = o.ShippingAddress.Country
+                },
+                CreatedAt = o.CreatedAt,
+                UpdatedAt = o.UpdatedAt
+            }).ToList();
+
+            return Ok(orderDtos);
+        }
+
 
         // Seller updates order status
         [Authorize(Roles = "Seller")]

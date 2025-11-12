@@ -552,14 +552,26 @@
         }
       }
     },
-    "/api/Order/user/{userId}": {
+    "/api/Order/user": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Order/orders/{id}": {
       "get": {
         "tags": [
           "Order"
         ],
         "parameters": [
           {
-            "name": "userId",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -574,20 +586,10 @@
         }
       }
     },
-    "/api/Order/seller/{sellerId}": {
+    "/api/Order/seller": {
       "get": {
         "tags": [
           "Order"
-        ],
-        "parameters": [
-          {
-            "name": "sellerId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
         ],
         "responses": {
           "200": {

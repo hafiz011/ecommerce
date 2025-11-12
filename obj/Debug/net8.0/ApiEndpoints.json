@@ -312,14 +312,14 @@
   },
   {
     "ContainingType": "ecommerce.Controllers.OrderController",
-    "Method": "GetOrdersBySeller",
-    "RelativePath": "api/Order/seller/{sellerId}",
+    "Method": "GetOrderById",
+    "RelativePath": "api/Order/orders/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "sellerId",
+        "Name": "id",
         "Type": "System.String",
         "IsRequired": true
       }
@@ -328,18 +328,22 @@
   },
   {
     "ContainingType": "ecommerce.Controllers.OrderController",
-    "Method": "GetOrdersByUser",
-    "RelativePath": "api/Order/user/{userId}",
+    "Method": "GetOrdersBySeller",
+    "RelativePath": "api/Order/seller",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "userId",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.OrderController",
+    "Method": "GetOrdersByUser",
+    "RelativePath": "api/Order/user",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

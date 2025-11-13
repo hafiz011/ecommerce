@@ -4,6 +4,7 @@ using ecommerce.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ecommerce.Controllers
 {
@@ -21,6 +22,7 @@ namespace ecommerce.Controllers
             _env = env;
         }
 
+        // need configure to get categories using seller id
         // Get all categories
         [HttpGet("allcategories")]
         public async Task<IActionResult> AllCategory()
@@ -33,6 +35,7 @@ namespace ecommerce.Controllers
             return Ok(all);
         }
 
+        // need configure to get category by id using seller id
         // Get category by ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
@@ -48,12 +51,16 @@ namespace ecommerce.Controllers
 
 
         // Add a new category
-        [Authorize (Roles = "Admin")]
+        [Authorize (Roles = "Seller")]
         [HttpPost]
         public async Task<IActionResult> AddCategory([FromBody] CategoryDto category)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("Unauthorized access.");
 
             if (category.ImageData == null || category.ImageData.Length == 0)
                 return BadRequest("Image is required.");
@@ -81,7 +88,8 @@ namespace ecommerce.Controllers
                     Name = category.Name,
                     Description = category.Description,
                     ImagePath = imageUrl,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
+                    SellerId = userId
                 };
 
                 await _categoryRepository.AddAsync(modelCategory);
@@ -94,19 +102,25 @@ namespace ecommerce.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        // Update an existing category
+        [Authorize(Roles = "Seller")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] CategoryDto updatedCategory)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("Unauthorized access.");
+
             var existingCategory = await _categoryRepository.FindByIdAsync(id);
-            if (existingCategory == null)
+            if (existingCategory == null || existingCategory.SellerId != userId)
                 return NotFound($"Category with ID {id} not found.");
 
             existingCategory.Name = updatedCategory.Name;
             existingCategory.Description = updatedCategory.Description;
+            existingCategory.SellerId = userId;
 
             if (updatedCategory.ImageData != null && updatedCategory.ImageData.Length > 0)
             {
@@ -147,13 +161,17 @@ namespace ecommerce.Controllers
         }
 
 
-
-        [Authorize(Roles = "Admin")]
+        // Delete a category
+        [Authorize(Roles = "Seller")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("Unauthorized access.");
+
             var existingCategory = await _categoryRepository.FindByIdAsync(id);
-            if (existingCategory == null)
+            if (existingCategory == null || existingCategory.SellerId != userId)
             {
                 return NotFound($"Category with ID {id} not found.");
             }

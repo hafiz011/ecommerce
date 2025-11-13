@@ -1,16 +1,17 @@
 using ecommerce.DbContext;
 using ecommerce.Models;
+using ecommerce.Repositories;
+using ecommerce.Services;
+using ecommerce.Services.Interface;
+using ecommerce.Services.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using MongoDB.Driver;
-using ecommerce.Services.Interface;
-using ecommerce.Services.Repository;
-using ecommerce.Services;
-using Microsoft.AspNetCore.HttpOverrides;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,26 +75,12 @@ builder.Services.AddControllersWithViews(options =>
 
 builder.Services.AddScoped<IUserGeolocationRepository, UserGeolocationRepository>();
 builder.Services.AddScoped<IUserLogsRepository, UserLogsRepository>();
-builder.Services.AddScoped<IUserGeolocationRepository, UserGeolocationRepository>();
-builder.Services.AddScoped<IUserLogsRepository, UserLogsRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IShoppingCartRepository , ShoppingCartRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<EmailService>();
 
-//var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy(name: MyAllowSpecificOrigins,
-//        policy =>
-//        {
-//            policy.WithOrigins("http://localhost:5051") // Example: Blazor WebAssembly dev port
-//                  .AllowAnyHeader()
-//                  .AllowAnyMethod()
-//                  .AllowCredentials();
-//        });
-//});
 
 builder.Services.AddCors(options =>
 {
@@ -110,15 +97,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-
 builder.Services.AddTransient<MongoDbSeeder>();
 
 
-
-
 var app = builder.Build();
-
-
 
 // Seed Data
 using (var scope = app.Services.CreateScope())

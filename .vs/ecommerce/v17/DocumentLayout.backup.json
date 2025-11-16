@@ -1,11 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\GitHub\\ecommerce\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\productcard.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -13,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,19 +30,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ProductCard.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\ProductCard.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\ProductCard.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\ProductCard.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\ProductCard.razor",
-              "ViewState": "AgIAAFEAAAAAAAAAAAAAAFUAAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-16T11:17:56.3Z",
-              "EditorCaption": ""
             }
           ]
         }

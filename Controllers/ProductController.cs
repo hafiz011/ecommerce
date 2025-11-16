@@ -131,9 +131,9 @@ namespace ecommerce.Controllers
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized("Unauthorized access.");
 
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                    return Unauthorized("Invalid seller account.");
+                //var user = await _userManager.FindByIdAsync(userId);
+                //if (user == null)
+                //    return Unauthorized("Invalid seller account.");
 
                 if (product == null)
                     return BadRequest("Invalid product data.");
@@ -239,9 +239,9 @@ namespace ecommerce.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized("Unauthorized access.");
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                    return Unauthorized("Invalid seller account.");
+                //var user = await _userManager.FindByIdAsync(userId);
+                //if (user == null)
+                //    return Unauthorized("Invalid seller account.");
                 if (string.IsNullOrEmpty(id))
                     return BadRequest("Invalid product ID.");
                 if (dto == null)

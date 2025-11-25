@@ -56,7 +56,7 @@ namespace ecommerce.Controllers
                 .FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
 
             // Calculate discounted price
-            var FinalPrice = product.Price - ((activeDiscount?.Percentage ?? 0) * product.Price / 100);
+            var FinalPrice = product.BasePrice - ((activeDiscount?.Percentage ?? 0) * product.BasePrice / 100);
 
             // Custom rounding logic:
             // if decimal part >= 0.5 → round up, else round down
@@ -91,7 +91,7 @@ namespace ecommerce.Controllers
                     ProductName = product.Name,
                     Quantity = request.Quantity,
                     Price = FinalPrice * request.Quantity,
-                    Image = product.Images?.FirstOrDefault() ?? string.Empty,
+                    //Image = product.Images?.FirstOrDefault() ?? string.Empty,
                     SellerId = product.SellerId
                 });
             }
@@ -195,7 +195,7 @@ namespace ecommerce.Controllers
             var activeDiscount = product.Discounts?
                 .FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
 
-            var FinalPrice = product.Price - ((activeDiscount?.Percentage ?? 0) * product.Price / 100);
+            var FinalPrice = product.BasePrice - ((activeDiscount?.Percentage ?? 0) * product.BasePrice / 100);
             FinalPrice = Math.Floor(FinalPrice) + ((FinalPrice % 1) >= 0.5m ? 1 : 0);
 
             // Update quantity & recalculate price

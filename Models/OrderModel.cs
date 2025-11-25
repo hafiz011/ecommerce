@@ -36,7 +36,10 @@ namespace ecommerce.Models
     public class OrderItem
     {
         public string ProductId { get; set; }
+        public string VariantId { get; set; }
         public string ProductName { get; set; }
+        public Dictionary<string, string> SelectedAttributes { get; set; }
+            = new Dictionary<string, string>();
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public string Image { get; set; }

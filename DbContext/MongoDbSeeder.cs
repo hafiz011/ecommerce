@@ -1,4 +1,5 @@
 ﻿using ecommerce.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace ecommerce.DbContext
@@ -18,11 +19,11 @@ namespace ecommerce.DbContext
             await SeedCategoriesAsync();
             await SeedProductsAsync();
 
-            // Create indexes for better performance
+            // Create indexes
             await _context.Products.Indexes.CreateManyAsync(new[]
             {
                 new CreateIndexModel<ProductModel>(Builders<ProductModel>.IndexKeys.Ascending(p => p.CategoryId)),
-                new CreateIndexModel<ProductModel>(Builders<ProductModel>.IndexKeys.Ascending(p => p.Price)),
+                new CreateIndexModel<ProductModel>(Builders<ProductModel>.IndexKeys.Ascending(p => p.BasePrice)),
                 new CreateIndexModel<ProductModel>(Builders<ProductModel>.IndexKeys.Descending(p => p.CreatedAt))
             });
         }
@@ -30,21 +31,18 @@ namespace ecommerce.DbContext
         private async Task SeedCategoriesAsync()
         {
             var categories = _context.Categories;
-
             if (await categories.CountDocumentsAsync(FilterDefinition<ProductCategoryModel>.Empty) > 0)
-                return; // Already seeded
+                return;
 
-            var seedCategories = new List<ProductCategoryModel>();
-            for (int i = 1; i <= 16; i++)
-            {
-                seedCategories.Add(new ProductCategoryModel
+            var seedCategories = Enumerable.Range(1, 16)
+                .Select(i => new ProductCategoryModel
                 {
                     Name = $"Category {i}",
                     ImagePath = $"category{i}.jpg",
                     Description = $"Description for Category {i}",
-                    CreatedAt = DateTime.UtcNow
-                });
-            }
+                    CreatedAt = DateTime.UtcNow,
+                    SellerId = "ccd84a15-4c17-47da-9589-edca383c0117"
+                }).ToList();
 
             await categories.InsertManyAsync(seedCategories);
         }
@@ -52,68 +50,94 @@ namespace ecommerce.DbContext
         private async Task SeedProductsAsync()
         {
             var products = _context.Products;
-            var categories = _context.Categories;
+            var categories = await _context.Categories.Find(_ => true).ToListAsync();
 
             if (await products.CountDocumentsAsync(FilterDefinition<ProductModel>.Empty) > 0)
-                return; // Already seeded
+                return;
 
-            var categoryList = await categories.Find(_ => true).ToListAsync();
             var seedProducts = new List<ProductModel>();
             var now = DateTime.UtcNow;
 
             for (int i = 1; i <= 100; i++)
             {
-                var category = categoryList[_rand.Next(categoryList.Count)];
-                var price = _rand.Next(50, 2000);
-                var stock = _rand.Next(1, 300);
-                var hasDiscount = _rand.Next(0, 2) == 1; // 50% chance
-                var discounts = new List<Discount>();
+                var category = categories[_rand.Next(categories.Count)];
+                var basePrice = _rand.Next(50, 2000);
+                var isNew = _rand.Next(0, 2) == 1;
 
-                if (hasDiscount)
+                // Generate attributes
+                var attributes = new Dictionary<string, List<string>>
+                {
+                    { "Color", new List<string> { "Red", "Blue", "Green", "Black" }.OrderBy(_ => _rand.Next()).Take(2).ToList() },
+                    { "Size", new List<string> { "S", "M", "L", "XL" }.OrderBy(_ => _rand.Next()).Take(2).ToList() }
+                };
+
+                // Generate variants
+                var variants = new List<ProductVariant>();
+                foreach (var color in attributes["Color"])
+                {
+                    foreach (var size in attributes["Size"])
+                    {
+                        variants.Add(new ProductVariant
+                        {
+                            VariantId = Guid.NewGuid().ToString(),
+                            Color = color,
+                            Size = size,
+                            SKU = $"SKU-{i}-{color[0]}{size}",
+                            Price = basePrice + _rand.Next(0, 50),
+                            Stock = _rand.Next(1, 100),
+                            Images = new List<string> { $"product{i % 10 + 1}.jpg" },
+                        });
+                    }
+                }
+
+                // Generate discounts
+                var discounts = new List<Discount>();
+                if (_rand.Next(0, 2) == 1) // 50% chance
                 {
                     discounts.Add(new Discount
                     {
+                        Id = Guid.NewGuid().ToString(),
                         Code = $"SAVE{_rand.Next(5, 30)}",
                         Percentage = _rand.Next(5, 30),
                         ValidFrom = now.AddDays(-_rand.Next(0, 10)),
-                        ValidTo = now.AddMonths(1),
+                        ValidTo = now.AddDays(_rand.Next(15, 60)),
                         IsActive = true
                     });
                 }
 
-                // Generate sample reviews
+                // Generate reviews
                 var reviews = new List<Review>();
-                int reviewCount = _rand.Next(0, 10); // Up to 10 reviews
-                for (int j = 1; j <= reviewCount; j++)
+                for (int j = 0; j < _rand.Next(0, 10); j++)
                 {
                     reviews.Add(new Review
                     {
-                        UserId = $"user{_rand.Next(1, 20)}",
+                        UserId = $"user{_rand.Next(1, 50)}",
                         UserName = $"User {_rand.Next(1, 100)}",
                         Rating = _rand.Next(1, 6),
-                        Comment = $"This is a sample review {j} for Product {i}.",
+                        Comment = $"Sample review {j + 1} for Product {i}.",
                         CreatedAt = now.AddDays(-_rand.Next(0, 30))
                     });
                 }
 
                 seedProducts.Add(new ProductModel
                 {
+                    Id = ObjectId.GenerateNewId().ToString(),
                     Name = $"Product {i}",
                     Description = $"Description for Product {i}",
                     CategoryId = category.Id,
-                    Price = price,
-                    Images = new List<string> { $"product{i % 10 + 1}.jpg" },
-                    Tags = new List<string> { "Tag1", "Tag2", "Popular" },
-                    StockQuantity = stock,
-                    SellerId = "31fad54c-a565-4dbd-8e1c-4e9002c0d501",
-                    IsNew = _rand.Next(0, 2) == 1,
+                    CategoryName = category.Name,
+                    BasePrice = basePrice,
+                    Attributes = attributes,
+                    Variants = variants,
+                    Tags = new List<string> { "Popular", "Sale", "New" },
+                    SellerId = "ccd84a15-4c17-47da-9589-edca383c0117",
+                    IsNew = isNew,
                     Discounts = discounts,
                     CreatedAt = now.AddDays(-_rand.Next(0, 60)),
                     UpdatedAt = now,
                     RestockDate = now.AddDays(_rand.Next(10, 40)),
                     Review = reviews,
                     Sold = _rand.Next(0, 500)
-                    // Note: averageRating is not stored, it's computed dynamically
                 });
             }
 

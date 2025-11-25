@@ -407,7 +407,7 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "product",
+        "Name": "dto",
         "Type": "ecommerce.Models.Dtos.SellerProductDto",
         "IsRequired": true
       }
@@ -492,6 +492,22 @@
       {
         "Name": "dto",
         "Type": "ecommerce.Models.Dtos.SellerProductDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.ProductController",
+    "Method": "GetSellerProductById",
+    "RelativePath": "api/Product/{Id}/seller",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.String",
         "IsRequired": true
       }
     ],

@@ -763,6 +763,28 @@
         }
       }
     },
+    "/api/Product/{Id}/seller": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/Product/all": {
       "get": {
         "tags": [
@@ -1096,7 +1118,7 @@
         },
         "additionalProperties": false
       },
-      "DiscountDto": {
+      "DiscountCreateDto": {
         "type": "object",
         "properties": {
           "code": {
@@ -1144,6 +1166,39 @@
           },
           "password": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductVariantCreateDto": {
+        "type": "object",
+        "properties": {
+          "color": {
+            "type": "string",
+            "nullable": true
+          },
+          "size": {
+            "type": "string",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "stock": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
             "nullable": true
           }
         },
@@ -1217,29 +1272,24 @@
             "type": "string",
             "nullable": true
           },
-          "attributes": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "nullable": true
-          },
           "description": {
             "type": "string",
             "nullable": true
           },
-          "categoryId": {
-            "type": "string",
+          "attributes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
             "nullable": true
           },
-          "price": {
-            "type": "number",
-            "format": "double"
-          },
-          "images": {
+          "variants": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/ProductVariantCreateDto"
             },
             "nullable": true
           },
@@ -1250,27 +1300,33 @@
             },
             "nullable": true
           },
-          "stockQuantity": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sold": {
-            "type": "integer",
-            "format": "int32"
+          "isNew": {
+            "type": "boolean"
           },
           "discounts": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/DiscountDto"
+              "$ref": "#/components/schemas/DiscountCreateDto"
             },
             "nullable": true
           },
-          "isNew": {
-            "type": "boolean"
-          },
           "restockDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
+          },
+          "categoryId": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "sold": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false

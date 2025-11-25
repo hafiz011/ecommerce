@@ -33,17 +33,107 @@ namespace ecommerce.Services.Repository
             await _products.InsertOneAsync(product);
         }
 
-        public async Task UpdateAsync(string id, ProductModel product)
+        public async Task<bool> UpdateProductAsync(ProductModel updatedProduct)
         {
-            await _products.ReplaceOneAsync(p => p.Id == id, product);
+            updatedProduct.UpdatedAt = DateTime.UtcNow;
+            var result = await _products.ReplaceOneAsync(x => x.Id == updatedProduct.Id, updatedProduct);
+            return result.ModifiedCount > 0;
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            await _products.DeleteOneAsync(p => p.Id == id);
+            var result = await _products.DeleteOneAsync(x => x.Id == id);
+            return result.DeletedCount > 0;
         }
 
-         
+        // variants
+        public async Task<bool> AddVariantAsync(string productId, ProductVariant variant)
+        {
+            variant.VariantId = Guid.NewGuid().ToString();
+
+            var update = Builders<ProductModel>.Update
+                .AddToSet(x => x.Variants, variant)
+                .Set(x => x.UpdatedAt, DateTime.UtcNow);
+
+            var result = await _products.UpdateOneAsync(
+                x => x.Id == productId,
+                update
+            );
+
+            return result.ModifiedCount > 0;
+        }
+
+        public async Task<bool> UpdateVariantAsync(string productId, ProductVariant variant)
+        {
+            var update = Builders<ProductModel>.Update
+                .Set(x => x.Variants[-1], variant)
+                .Set(x => x.UpdatedAt, DateTime.UtcNow);
+
+            var result = await _products.UpdateOneAsync(
+                x => x.Id == productId && x.Variants.Any(v => v.VariantId == variant.VariantId),
+                update
+            );
+
+            return result.ModifiedCount > 0;
+        }
+
+        public async Task<bool> DeleteVariantAsync(string productId, string variantId)
+        {
+            var update = Builders<ProductModel>.Update
+                .PullFilter(x => x.Variants, v => v.VariantId == variantId)
+                .Set(x => x.UpdatedAt, DateTime.UtcNow);
+
+            var result = await _products.UpdateOneAsync(
+                x => x.Id == productId,
+                update
+            );
+
+            return result.ModifiedCount > 0;
+        }
+
+        // inventory / stock
+        public async Task<bool> UpdateVariantStockAsync(string productId, string variantId, int newStock)
+        {
+            var update = Builders<ProductModel>.Update
+                .Set(x => x.Variants[-1].Stock, newStock)
+                .Set(x => x.UpdatedAt, DateTime.UtcNow);
+
+            var result = await _products.UpdateOneAsync(
+                x => x.Id == productId && x.Variants.Any(v => v.VariantId == variantId),
+                update
+            );
+
+            return result.ModifiedCount > 0;
+        }
+
+        public async Task<bool> IncreaseStockAsync(string productId, string variantId, int amount)
+        {
+            var update = Builders<ProductModel>.Update
+                .Inc(x => x.Variants[-1].Stock, amount)
+                .Set(x => x.UpdatedAt, DateTime.UtcNow);
+
+            var result = await _products.UpdateOneAsync(
+                x => x.Id == productId && x.Variants.Any(v => v.VariantId == variantId),
+                update
+            );
+
+            return result.ModifiedCount > 0;
+        }
+
+        public async Task<bool> DecreaseStockAsync(string productId, string variantId, int amount)
+        {
+            var update = Builders<ProductModel>.Update
+                .Inc(x => x.Variants[-1].Stock, -amount)
+                .Set(x => x.UpdatedAt, DateTime.UtcNow);
+
+            var result = await _products.UpdateOneAsync(
+                x => x.Id == productId && x.Variants.Any(v => v.VariantId == variantId),
+                update
+            );
+
+            return result.ModifiedCount > 0;
+        }
+
 
         // Page by page (no filters)
         public async Task<(List<ProductDto> items, int total)> GetPagedAsync(int page, int pageSize)
@@ -60,38 +150,48 @@ namespace ecommerce.Services.Repository
             var productDtos = items.Select(p =>
             {
                 var activeDiscount = p.Discounts?.FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
-                var DiscountPrice = p.Price - ((activeDiscount?.Percentage ?? 0) * p.Price / 100);
+                var DiscountPrice = p.BasePrice - ((activeDiscount?.Percentage ?? 0) * p.BasePrice / 100);
                 // Calculate average rating safely
                 double averageRating = 0;
                 if (p.Review != null && p.Review.Count > 0)
                 {
                     averageRating = p.Review.Average(r => r.Rating);
                 }
+                var images = new List<string>();
+                if (p.Variants != null && p.Variants.Count > 0)
+                {
+                    // Variant 1 → first image
+                    var img1 = p.Variants[0].Images?.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(img1))
+                        images.Add(img1);
+
+                    // Variant 2 → first image
+                    if (p.Variants.Count > 1)
+                    {
+                        var img2 = p.Variants[1].Images?.FirstOrDefault();
+                        if (!string.IsNullOrEmpty(img2))
+                            images.Add(img2);
+                    }
+                }
                 return new ProductDto
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    Price = p.Price,
-                    ImageUrl = p.Images?.FirstOrDefault() ?? "default.jpg",
                     CategoryId = p.CategoryId,
+                    CategoryName = p.CategoryName,
+                    Images = images,
+                    Price = p.BasePrice,
+                    FinalPrice = Math.Floor(DiscountPrice) + ((DiscountPrice % 1) >= 0.5m ? 1 : 0),
+                    StockQuantity = p.Variants?.Sum(v => v.Stock) ?? 0,
+                    Sold = p.Sold,
                     IsNew = p.IsNew,
                     Rating = averageRating,
-                    StockQuantity = p.StockQuantity,
-                    Sold = p.Sold,
-                    CreatedAt = p.CreatedAt,
-                    SellerId = p.SellerId,
-                    Tags = p.Tags ?? new List<string>(),
-                    Images = p.Images ?? new List<string>(),
                     HasActiveDiscount = activeDiscount != null,
                     DiscountPercent = activeDiscount?.Percentage ?? 0,
-                    FinalPrice = Math.Floor(DiscountPrice) + ((DiscountPrice % 1) >= 0.5m ? 1 : 0)
-
                 };
             }).ToList();
             return (productDtos, total);
         }
-
-
 
         // Page by page including filters
         public async Task<(List<ProductDto> items, int total)> GetFilteredPagedAsync(ProductFilter filter, int page, int pageSize)
@@ -107,10 +207,10 @@ namespace ecommerce.Services.Repository
                 conditions.Add(builder.Eq(p => p.CategoryId, filter.CategoryId));
 
             if (filter.MinPrice.HasValue)
-                conditions.Add(builder.Gte(p => p.Price, filter.MinPrice.Value));
+                conditions.Add(builder.Gte(p => p.BasePrice, filter.MinPrice.Value));
 
             if (filter.MaxPrice.HasValue)
-                conditions.Add(builder.Lte(p => p.Price, filter.MaxPrice.Value));
+                conditions.Add(builder.Lte(p => p.BasePrice, filter.MaxPrice.Value));
 
             var finalFilter = conditions.Any()
                 ? builder.And(conditions)
@@ -129,184 +229,48 @@ namespace ecommerce.Services.Repository
             var productDtos = items.Select(p =>
             {
                 var activeDiscount = p.Discounts?.FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
-                var DiscountPrice = p.Price - ((activeDiscount?.Percentage ?? 0) * p.Price / 100);
+                var DiscountPrice = p.BasePrice - ((activeDiscount?.Percentage ?? 0) * p.BasePrice / 100);
                 // Calculate average rating safely
                 double averageRating = 0;
                 if (p.Review != null && p.Review.Count > 0)
                 {
                     averageRating = p.Review.Average(r => r.Rating);
                 }
+                var images = new List<string>();
+                if (p.Variants != null && p.Variants.Count > 0)
+                {
+                    // Variant 1 → first image
+                    var img1 = p.Variants[0].Images?.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(img1))
+                        images.Add(img1);
+
+                    // Variant 2 → first image
+                    if (p.Variants.Count > 1)
+                    {
+                        var img2 = p.Variants[1].Images?.FirstOrDefault();
+                        if (!string.IsNullOrEmpty(img2))
+                            images.Add(img2);
+                    }
+                }
                 return new ProductDto
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    Price = p.Price,
-                    ImageUrl = p.Images?.FirstOrDefault() ?? "default.jpg",
                     CategoryId = p.CategoryId,
+                    CategoryName = p.CategoryName,
+                    Images = images,
+                    Price = p.BasePrice,
+                    FinalPrice = Math.Floor(DiscountPrice) + ((DiscountPrice % 1) >= 0.5m ? 1 : 0),
+                    StockQuantity = p.Variants?.Sum(v => v.Stock) ?? 0,
+                    Sold = p.Sold,
                     IsNew = p.IsNew,
                     Rating = averageRating,
-                    StockQuantity = p.StockQuantity,
-                    Sold = p.Sold,
-                    CreatedAt = p.CreatedAt,
-                    SellerId = p.SellerId,
-                    Tags = p.Tags ?? new List<string>(),
-                    Images = p.Images ?? new List<string>(),
                     HasActiveDiscount = activeDiscount != null,
                     DiscountPercent = activeDiscount?.Percentage ?? 0,
-                    FinalPrice = Math.Floor(DiscountPrice) + ((DiscountPrice % 1) >= 0.5m ? 1 : 0)
                 };
             }).ToList();
             return (productDtos, total);
         }
-
-
-
-        //public async Task<(List<ProductDto> items, int total)> GetFilteredPagedAsync(ProductFilter filter, int page, int pageSize)
-        //{
-        //    var now = DateTime.UtcNow;
-        //    var nowBson = new BsonDateTime(now);
-
-        //    var filterBuilder = Builders<ProductModel>.Filter;
-        //    var conditions = new List<FilterDefinition<ProductModel>>();
-
-        //    // Text search
-        //    if (!string.IsNullOrWhiteSpace(filter.Search))
-        //        conditions.Add(filterBuilder.Regex(p => p.Name, new BsonRegularExpression(filter.Search, "i")));
-
-        //    // Category filter
-        //    if (!string.IsNullOrWhiteSpace(filter.CategoryId))
-        //        conditions.Add(filterBuilder.Eq(p => p.CategoryId, filter.CategoryId));
-
-        //    var baseFilter = conditions.Any()
-        //        ? filterBuilder.And(conditions)
-        //        : FilterDefinition<ProductModel>.Empty;
-
-        //    // Render filter for pipeline
-        //    var renderedFilter = baseFilter.Render(
-        //        BsonSerializer.LookupSerializer<ProductModel>(),
-        //        BsonSerializer.SerializerRegistry
-        //    );
-
-        //    // Core aggregation pipeline
-        //    var pipeline = new List<BsonDocument>
-        //    {
-        //        new("$match", renderedFilter),
-
-        //        // Compute ActiveDiscount and FinalPrice efficiently
-        //        new("$set", new BsonDocument
-        //        {
-        //            {
-        //                "ActiveDiscount",
-        //                new BsonDocument("$first", new BsonDocument("$filter", new BsonDocument
-        //                {
-        //                    { "input", "$Discounts" },
-        //                    { "as", "d" },
-        //                    { "cond", new BsonDocument("$and", new BsonArray
-        //                        {
-        //                            new BsonDocument("$eq", new BsonArray { "$$d.IsActive", true }),
-        //                            new BsonDocument("$lte", new BsonArray { "$$d.ValidFrom", nowBson }),
-        //                            new BsonDocument("$gte", new BsonArray { "$$d.ValidTo", nowBson })
-        //                        })
-        //                    }
-        //                }))
-        //            },
-        //            {
-        //                "FinalPrice",
-        //                new BsonDocument("$cond", new BsonArray
-        //                {
-        //                    new BsonDocument("$gt", new BsonArray { "$ActiveDiscount", BsonNull.Value }),
-        //                    new BsonDocument("$subtract", new BsonArray
-        //                    {
-        //                        "$Price",
-        //                        new BsonDocument("$multiply", new BsonArray
-        //                        {
-        //                            "$Price",
-        //                            new BsonDocument("$divide", new BsonArray { "$ActiveDiscount.Percentage", 100 })
-        //                        })
-        //                    }),
-        //                    "$Price"
-        //                })
-        //            }
-        //        })
-        //    };
-
-        //    // Apply price range filter on server
-        //    if (filter.MinPrice.HasValue || filter.MaxPrice.HasValue)
-        //    {
-        //        var priceRange = new BsonDocument();
-        //        if (filter.MinPrice.HasValue) priceRange.Add("$gte", filter.MinPrice.Value);
-        //        if (filter.MaxPrice.HasValue) priceRange.Add("$lte", filter.MaxPrice.Value);
-        //        pipeline.Add(new("$match", new BsonDocument("FinalPrice", priceRange)));
-        //    }
-
-        //    // Count before paging
-        //    var countPipeline = new List<BsonDocument>(pipeline)
-        //    {
-        //        new("$count", "total")
-        //    };
-
-        //            var countResult = await _products.Aggregate<BsonDocument>(countPipeline).FirstOrDefaultAsync();
-        //            var total = countResult?["total"].AsInt32 ?? 0;
-
-        //            // Pagination and sorting
-        //            pipeline.AddRange(new[]
-        //            {
-        //        new BsonDocument("$sort", new BsonDocument("CreatedAt", -1)),
-        //        new BsonDocument("$skip", (page - 1) * pageSize),
-        //        new BsonDocument("$limit", pageSize)
-        //    });
-
-        //    // Execute aggregation
-        //    var results = await _products.Aggregate<BsonDocument>(pipeline).ToListAsync();
-
-        //    // Map to DTO using your old mapping logic
-        //    var productDtos = results.Select(r =>
-        //    {
-        //        var price = r["Price"].ToDecimal();
-        //        var finalPrice = r.Contains("FinalPrice") ? r["FinalPrice"].ToDecimal() : price;
-
-        //        Discount activeDiscount = null;
-        //        if (r.Contains("ActiveDiscount") && !r["ActiveDiscount"].IsBsonNull)
-        //        {
-        //            var ad = r["ActiveDiscount"].AsBsonDocument;
-        //            activeDiscount = new Discount
-        //            {
-        //                Id = ad["_id"].AsString,
-        //                Code = ad["Code"].AsString,
-        //                Percentage = ad["Percentage"].ToDecimal(),
-        //                ValidFrom = ad["ValidFrom"].ToUniversalTime(),
-        //                ValidTo = ad["ValidTo"].ToUniversalTime(),
-        //                IsActive = ad["IsActive"].ToBoolean(),
-        //                ProductId = ad.Contains("ProductId") ? ad["ProductId"].AsString : null
-        //            };
-        //        }
-
-        //        return new ProductDto
-        //        {
-        //            Id = r["_id"].AsObjectId.ToString(),
-        //            Name = r["Name"].AsString,
-        //            Description = r.Contains("Description") ? r["Description"].AsString : null,
-        //            CategoryId = r["CategoryId"].AsString,
-        //            Price = price,
-        //            FinalPrice = finalPrice,
-        //            HasActiveDiscount = activeDiscount != null,
-        //            DiscountPercent = activeDiscount?.Percentage ?? 0,
-        //            ImageUrl = r.Contains("Images") && r["Images"].AsBsonArray.Count > 0
-        //                ? r["Images"].AsBsonArray[0].AsString
-        //                : "default.jpg",
-        //            Images = r.Contains("Images") ? r["Images"].AsBsonArray.Select(i => i.AsString).ToList() : new List<string>(),
-        //            Tags = r.Contains("Tags") ? r["Tags"].AsBsonArray.Select(i => i.AsString).ToList() : new List<string>(),
-        //            StockQuantity = r["StockQuantity"].ToInt32(),
-        //            IsNew = r["IsNew"].ToBoolean(),
-        //            Rating = r["Rating"].ToDouble(),
-        //            SellerId = r["SellerId"].AsString,
-        //            CreatedAt = r["CreatedAt"].ToUniversalTime()
-        //        };
-        //    }).ToList();
-
-
-        //    return (productDtos, total);
-        //}
 
         
         public async Task<List<ProductDto>> GetProductBySellerIdAsync(string userId)
@@ -318,7 +282,7 @@ namespace ecommerce.Services.Repository
                 var activeDiscount = p.Discounts?
                     .FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
 
-                var DiscountPrice = p.Price - ((activeDiscount?.Percentage ?? 0) * p.Price / 100);
+                var DiscountPrice = p.BasePrice - ((activeDiscount?.Percentage ?? 0) * p.BasePrice / 100);
 
                 // Calculate average rating safely
                 double averageRating = 0;
@@ -326,24 +290,40 @@ namespace ecommerce.Services.Repository
                 {
                     averageRating = p.Review.Average(r => r.Rating);
                 }
+
+                var images = new List<string>();
+
+                if (p.Variants != null && p.Variants.Count > 0)
+                {
+                    // Variant 1 → first image
+                    var img1 = p.Variants[0].Images?.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(img1))
+                        images.Add(img1);
+
+                    // Variant 2 → first image
+                    if (p.Variants.Count > 1)
+                    {
+                        var img2 = p.Variants[1].Images?.FirstOrDefault();
+                        if (!string.IsNullOrEmpty(img2))
+                            images.Add(img2);
+                    }
+                }
+
                 return new ProductDto
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    Price = p.Price,
-                    ImageUrl = p.Images?.FirstOrDefault() ?? "default.jpg",
                     CategoryId = p.CategoryId,
+                    CategoryName = p.CategoryName,
+                    Images = images,
+                    Price = p.BasePrice,
+                    FinalPrice = Math.Floor(DiscountPrice) + ((DiscountPrice % 1) >= 0.5m ? 1 : 0),
+                    StockQuantity = p.Variants?.Sum(v => v.Stock) ?? 0,
+                    Sold = p.Sold,
                     IsNew = p.IsNew,
                     Rating = averageRating,
-                    StockQuantity = p.StockQuantity,
-                    Sold = p.Sold,
-                    CreatedAt = p.CreatedAt,
-                    SellerId = p.SellerId,
-                    Tags = p.Tags ?? new List<string>(),
-                    Images = p.Images ?? new List<string>(),
                     HasActiveDiscount = activeDiscount != null,
                     DiscountPercent = activeDiscount?.Percentage ?? 0,
-                    FinalPrice = Math.Floor(DiscountPrice) + ((DiscountPrice % 1) >= 0.5m ? 1 : 0)
                 };
             }).ToList();
         }

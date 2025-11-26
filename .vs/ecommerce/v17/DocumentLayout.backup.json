@@ -6,11 +6,10 @@
       "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\productdetails.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\models\\productdetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\layout\\shared\\ordertopupmodal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|d:\\github\\ecommerce\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|solutionrelative:controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\services\\cartservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -20,7 +19,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -45,14 +44,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ProductDetailsDto.cs",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Models\\ProductDetailsDto.cs",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Models\\ProductDetailsDto.cs",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Models\\ProductDetailsDto.cs",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Models\\ProductDetailsDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAAtAAAAAAAAAA==",
+              "Title": "OrderTopUpModal.razor",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Layout\\Shared\\OrderTopUpModal.razor",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Layout\\Shared\\OrderTopUpModal.razor",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Layout\\Shared\\OrderTopUpModal.razor",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Layout\\Shared\\OrderTopUpModal.razor",
+              "ViewState": "AgIAAHAAAAAAAAAAAAAiwM4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-26T09:52:13.175Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CartService.cs",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Services\\CartService.cs",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Services\\CartService.cs",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Services\\CartService.cs",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Services\\CartService.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAA1wA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T12:00:53.998Z",
+              "WhenOpened": "2025-11-26T08:38:21.049Z",
               "EditorCaption": ""
             },
             {
@@ -63,22 +75,9 @@
               "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\ProductDetails.razor",
               "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\ProductDetails.razor",
               "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\ProductDetails.razor",
-              "ViewState": "AgIAACAAAAAAAAAAAAAiwC4AAAApAAAAAAAAAA==",
+              "ViewState": "AgIAAKsBAAAAAAAAAAAiwJkCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-11-25T11:32:02.67Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ProductController.cs",
-              "DocumentMoniker": "D:\\GitHub\\ecommerce\\Controllers\\ProductController.cs",
-              "RelativeDocumentMoniker": "Controllers\\ProductController.cs",
-              "ToolTip": "D:\\GitHub\\ecommerce\\Controllers\\ProductController.cs",
-              "RelativeToolTip": "Controllers\\ProductController.cs",
-              "ViewState": "AgIAAIEAAAAAAAAAAAAswI4AAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T09:59:36.859Z",
               "EditorCaption": ""
             }
           ]

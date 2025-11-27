@@ -1020,6 +1020,18 @@
           "quantity": {
             "type": "integer",
             "format": "int32"
+          },
+          "variantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "color": {
+            "type": "string",
+            "nullable": true
+          },
+          "size": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

@@ -24,13 +24,14 @@ namespace ecommerce.Models
         public string ProductId { get; set; }
         public string VariantId { get; set; }
         public string ProductName { get; set; }
-
-        // For UI display only
-        public Dictionary<string, string> SelectedAttributes { get; set; }
-            = new Dictionary<string, string>();
+        public string Color { get; set; }
+        public string Size { get; set; }
+        public string SKU { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public string Image { get; set; }
         public string SellerId { get; set; }
+        public Dictionary<string, string> SelectedAttributes { get; set; }
+        = new Dictionary<string, string>();
     }
 }

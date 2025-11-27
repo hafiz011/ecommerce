@@ -29,6 +29,9 @@ namespace ecommerce.Controllers
         {
             public string ProductId { get; set; }
             public int Quantity { get; set; }
+            public string VariantId { get; set; }
+            public string? Color { get; set; }
+            public string? Size { get; set; }
         }
         public class UpdateQuantityRequest
         {
@@ -55,17 +58,33 @@ namespace ecommerce.Controllers
             var activeDiscount = product.Discounts?
                 .FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
 
-            // Calculate discounted price
-            var FinalPrice = product.BasePrice - ((activeDiscount?.Percentage ?? 0) * product.BasePrice / 100);
+            decimal basePrice = product.BasePrice;
 
-            // Custom rounding logic:
-            // if decimal part >= 0.5 → round up, else round down
-            //var roundedPrice = Math.Floor(FinalPrice) + (FinalPrice - Math.Floor(FinalPrice) >= 0.5m ? 1 : 0);
-            //FinalPrice = roundedPrice;
-            FinalPrice = Math.Floor(FinalPrice) + ((FinalPrice % 1) >= 0.5m ? 1 : 0);
+            // variants 
+            ProductVariant selectedVariant = null;
+            if (!string.IsNullOrEmpty(request.VariantId))
+            {
+                selectedVariant = product.Variants.FirstOrDefault(v => v.VariantId == request.VariantId);
 
+                if (selectedVariant == null)
+                    return BadRequest("Invalid variant selected.");
 
-            // Get or create the user's shopping cart
+                if (selectedVariant.Stock < request.Quantity)
+                    return BadRequest("Insufficient stock for selected variant.");
+
+                // Override base price with variant price
+                basePrice = selectedVariant.Price;
+            }
+            else if (product.Variants.Any())
+            {
+                return BadRequest("This product requires a variant selection.");
+            }
+
+            // discount
+            var finalPrice = basePrice - ((activeDiscount?.Percentage ?? 0) * basePrice / 100);
+            finalPrice = Math.Floor(finalPrice) + ((finalPrice % 1) >= 0.5m ? 1 : 0);
+
+            // Get or Create Cart
             var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId)
                        ?? new ShoppingCartModel
                        {
@@ -74,33 +93,49 @@ namespace ecommerce.Controllers
                            CreatedAt = now
                        };
 
-            // Check if the product is already in the cart
-            var existingItem = cart.Items.FirstOrDefault(i => i.ProductId == request.ProductId);
+            // Check for existing variant entry in cart
+            var existingItem = cart.Items.FirstOrDefault(i =>
+               i.ProductId == request.ProductId &&
+               i.VariantId == request.VariantId);
+
             if (existingItem != null)
             {
-                // Update quantity and price
+                // Update quantity
                 existingItem.Quantity += request.Quantity;
-                existingItem.Price = FinalPrice * existingItem.Quantity;
+                existingItem.Price = finalPrice * existingItem.Quantity;
             }
             else
             {
-                // Add new product to the cart
-                cart.Items.Add(new CartItem
+                var newItem = new CartItem
                 {
-                    ProductId = request.ProductId,
+                    ProductId = product.Id,
+                    VariantId = request.VariantId,
                     ProductName = product.Name,
                     Quantity = request.Quantity,
-                    Price = FinalPrice * request.Quantity,
-                    //Image = product.Images?.FirstOrDefault() ?? string.Empty,
-                    SellerId = product.SellerId
-                });
+                    Price = finalPrice * request.Quantity,
+                    SellerId = product.SellerId,
+
+                    // Assign selected attributes
+                    Color = selectedVariant?.Color ?? request.Color,
+                    Size = selectedVariant?.Size ?? request.Size,
+                    SKU = selectedVariant?.SKU ?? string.Empty,
+                    Image = selectedVariant?.Images?.FirstOrDefault(),
+                    SelectedAttributes = new Dictionary<string, string>()
+                };
+
+                if (!string.IsNullOrEmpty(newItem.Color))
+                    newItem.SelectedAttributes["Color"] = newItem.Color;
+
+                if (!string.IsNullOrEmpty(newItem.Size))
+                    newItem.SelectedAttributes["Size"] = newItem.Size;
+
+                cart.Items.Add(newItem);
             }
 
             // Update cart's total amount and save
             cart.TotalAmount = cart.Items.Sum(i => i.Price);
             cart.UpdatedAt = now;
             await _shoppingCartRepository.UpsertCartAsync(cart);
-
             return Ok(cart);
         }
 

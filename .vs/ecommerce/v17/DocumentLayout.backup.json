@@ -3,13 +3,22 @@
   "WorkspaceRootPath": "D:\\GitHub\\ecommerce\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\productdetails.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\layout\\shared\\ordertopupmodal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|d:\\github\\ecommerce\\controllers\\shoppingcartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|solutionrelative:controllers\\shoppingcartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\services\\cartservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|d:\\github\\ecommerce\\models\\shoppingcartmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|solutionrelative:models\\shoppingcartmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\productdetails.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|d:\\github\\ecommerce\\services\\repository\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|solutionrelative:services\\repository\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -43,39 +52,65 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "OrderTopUpModal.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Layout\\Shared\\OrderTopUpModal.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Layout\\Shared\\OrderTopUpModal.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Layout\\Shared\\OrderTopUpModal.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Layout\\Shared\\OrderTopUpModal.razor",
-              "ViewState": "AgIAAHAAAAAAAAAAAAAiwM4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-26T09:52:13.175Z",
+              "DocumentIndex": 2,
+              "Title": "ShoppingCartModel.cs",
+              "DocumentMoniker": "D:\\GitHub\\ecommerce\\Models\\ShoppingCartModel.cs",
+              "RelativeDocumentMoniker": "Models\\ShoppingCartModel.cs",
+              "ToolTip": "D:\\GitHub\\ecommerce\\Models\\ShoppingCartModel.cs",
+              "RelativeToolTip": "Models\\ShoppingCartModel.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAswB0AAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T11:33:35.259Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CartService.cs",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Services\\CartService.cs",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Services\\CartService.cs",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Services\\CartService.cs",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Services\\CartService.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAA1wA4AAAAAAAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "ProductRepository.cs",
+              "DocumentMoniker": "D:\\GitHub\\ecommerce\\Services\\Repository\\ProductRepository.cs",
+              "RelativeDocumentMoniker": "Services\\Repository\\ProductRepository.cs",
+              "ToolTip": "D:\\GitHub\\ecommerce\\Services\\Repository\\ProductRepository.cs",
+              "RelativeToolTip": "Services\\Repository\\ProductRepository.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwBkAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-26T08:38:21.049Z",
+              "WhenOpened": "2025-11-27T11:32:12.174Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "ShoppingCartController.cs",
+              "DocumentMoniker": "D:\\GitHub\\ecommerce\\Controllers\\ShoppingCartController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ShoppingCartController.cs",
+              "ToolTip": "D:\\GitHub\\ecommerce\\Controllers\\ShoppingCartController.cs",
+              "RelativeToolTip": "Controllers\\ShoppingCartController.cs",
+              "ViewState": "AgIAAM4AAAAAAAAAAAAqwOIAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T11:28:51.797Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CartService.cs",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Services\\CartService.cs",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Services\\CartService.cs",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Services\\CartService.cs",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Services\\CartService.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwBsAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T07:08:26.585Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "ProductDetails.razor",
               "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\ProductDetails.razor",
               "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\ProductDetails.razor",
               "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\ProductDetails.razor",
               "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\ProductDetails.razor",
-              "ViewState": "AgIAAKsBAAAAAAAAAAAiwJkCAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAKsCAAAAAAAAAADwv8gCAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-11-25T11:32:02.67Z",
               "EditorCaption": ""

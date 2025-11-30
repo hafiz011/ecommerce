@@ -912,7 +912,7 @@
         }
       }
     },
-    "/api/ShoppingCart/RemoveFromCart/{productId}": {
+    "/api/ShoppingCart/RemoveFromCart/{productId}/{variantId}": {
       "delete": {
         "tags": [
           "ShoppingCart"
@@ -920,6 +920,14 @@
         "parameters": [
           {
             "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "variantId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1117,6 +1125,10 @@
         "type": "object",
         "properties": {
           "productId": {
+            "type": "string",
+            "nullable": true
+          },
+          "variantId": {
             "type": "string",
             "nullable": true
           },
@@ -1374,6 +1386,10 @@
           "quantity": {
             "type": "integer",
             "format": "int32"
+          },
+          "variantId": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

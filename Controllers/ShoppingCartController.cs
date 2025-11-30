@@ -37,6 +37,7 @@ namespace ecommerce.Controllers
         {
             public string ProductId { get; set; }
             public int Quantity { get; set; }
+            public string VariantId { get; set; }
         }
 
         [HttpPost("AddToCart")]
@@ -158,8 +159,8 @@ namespace ecommerce.Controllers
 
 
         /// Removes an item from the shopping cart.
-        [HttpDelete("RemoveFromCart/{productId}")]
-        public async Task<IActionResult> RemoveFromCart(string productId)
+        [HttpDelete("RemoveFromCart/{productId}/{variantId}")]
+        public async Task<IActionResult> RemoveFromCart(string productId, string variantId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -170,14 +171,15 @@ namespace ecommerce.Controllers
             if (cart == null)
                 return NotFound("Cart not found.");
 
-            var itemToRemove = cart.Items.FirstOrDefault(i => i.ProductId == productId);
+            var itemToRemove = cart.Items
+                .FirstOrDefault(i => i.ProductId == productId && i.VariantId == variantId);
+
             if (itemToRemove == null)
-                return NotFound("Product not found in cart.");
+                return NotFound("Item not found in cart.");
 
             cart.Items.Remove(itemToRemove);
             cart.TotalAmount = cart.Items.Sum(i => i.Price);
             cart.UpdatedAt = DateTime.UtcNow;
-
             await _shoppingCartRepository.UpsertCartAsync(cart);
             return Ok(cart);
         }
@@ -206,8 +208,8 @@ namespace ecommerce.Controllers
         [HttpPut("UpdateQuantity")]
         public async Task<IActionResult> UpdateQuantity([FromBody] UpdateQuantityRequest request)
         {
-            if (request == null || string.IsNullOrEmpty(request.ProductId) || request.Quantity <= 0)
-                return BadRequest("Invalid product or quantity.");
+            if (request == null || string.IsNullOrEmpty(request.ProductId) || string.IsNullOrEmpty(request.VariantId) || request.Quantity <= 0)
+                return BadRequest("Invalid request.");
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
@@ -217,7 +219,7 @@ namespace ecommerce.Controllers
             if (cart == null)
                 return NotFound("Cart not found.");
 
-            var item = cart.Items.FirstOrDefault(i => i.ProductId == request.ProductId);
+            var item = cart.Items.FirstOrDefault(i => i.ProductId == request.ProductId && i.VariantId == request.VariantId);
             if (item == null)
                 return NotFound("Product not found in cart.");
 
@@ -226,16 +228,23 @@ namespace ecommerce.Controllers
             if (product == null)
                 return NotFound("Product not found.");
 
+            var variant = product.Variants.FirstOrDefault(v => v.VariantId == request.VariantId);
+            if (variant == null)
+                return BadRequest("Invalid variant.");
+
+            if (variant.Stock < request.Quantity)
+                return BadRequest("Not enough stock for this variant.");
+
+            decimal priceBeforeDiscount = variant.Price;
             var now = DateTime.UtcNow;
             var activeDiscount = product.Discounts?
                 .FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
 
-            var FinalPrice = product.BasePrice - ((activeDiscount?.Percentage ?? 0) * product.BasePrice / 100);
-            FinalPrice = Math.Floor(FinalPrice) + ((FinalPrice % 1) >= 0.5m ? 1 : 0);
+            var finalPrice = priceBeforeDiscount - ((activeDiscount?.Percentage ?? 0) * priceBeforeDiscount / 100);
+            finalPrice = Math.Floor(finalPrice) + ((finalPrice % 1) >= 0.5m ? 1 : 0);
 
-            // Update quantity & recalculate price
             item.Quantity = request.Quantity;
-            item.Price = FinalPrice * item.Quantity;
+            item.Price = finalPrice * item.Quantity;
 
             cart.TotalAmount = cart.Items.Sum(i => i.Price);
             cart.UpdatedAt = DateTime.UtcNow;

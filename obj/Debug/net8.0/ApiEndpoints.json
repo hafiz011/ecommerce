@@ -584,13 +584,18 @@
   {
     "ContainingType": "ecommerce.Controllers.ShoppingCartController",
     "Method": "RemoveFromCart",
-    "RelativePath": "api/ShoppingCart/RemoveFromCart/{productId}",
+    "RelativePath": "api/ShoppingCart/RemoveFromCart/{productId}/{variantId}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "productId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "variantId",
         "Type": "System.String",
         "IsRequired": true
       }

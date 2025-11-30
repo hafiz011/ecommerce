@@ -31,6 +31,7 @@ namespace ecommerce.Controllers
         public class CreateOrderRequest
         {
             public string? ProductId { get; set; }
+            public string? VariantId { get; set; }
             [Required]
             public string PaymentMethod { get; set; }
             [Required]
@@ -43,7 +44,7 @@ namespace ecommerce.Controllers
             public string Email { get; set; }
             public string Address { get; set; }
             public string City { get; set; }
-            public string Country { get; set; } 
+            public string? Country { get; set; } 
         }
 
         [HttpPost("create")]
@@ -67,21 +68,30 @@ namespace ecommerce.Controllers
                 if (product == null)
                     return NotFound("Product not found.");
 
+                var  selectedVariant = product.Variants.FirstOrDefault(v => v.VariantId == request.VariantId);
+                if (selectedVariant == null)
+                    return BadRequest("Invalid variant selected.");
+
                 var now = DateTime.UtcNow;
                 var activeDiscount = product.Discounts?
                     .FirstOrDefault(d => d.IsActive && d.ValidFrom <= now && d.ValidTo >= now);
 
-                var FinalPrice = product.BasePrice - ((activeDiscount?.Percentage ?? 0) * product.BasePrice / 100);
+                var FinalPrice = selectedVariant.Price - ((activeDiscount?.Percentage ?? 0) * selectedVariant.Price / 100);
                 FinalPrice = Math.Floor(FinalPrice) + ((FinalPrice % 1) >= 0.5m ? 1 : 0);
 
                 cartItems.Add(new CartItem
                 {
                     ProductId = product.Id,
+                    VariantId = request.VariantId,
                     ProductName = product.Name,
+                    Color = selectedVariant.Color,
+                    Size = selectedVariant.Size,
+                    SKU = selectedVariant.SKU,
                     Quantity = 1,
                     Price = FinalPrice,
-                    //Image = product.Images.FirstOrDefault() ?? string.Empty,
-                    SellerId = product.SellerId
+                    Image = selectedVariant.Images.FirstOrDefault() ?? string.Empty,
+                    SellerId = product.SellerId,
+                    //SelectedAttributes = new Dictionary<string, string>()
                 });
             }
             else
@@ -101,7 +111,7 @@ namespace ecommerce.Controllers
             foreach (var group in groupedBySeller)
             {
                 decimal subTotal = group.Sum(i => i.Price * i.Quantity);
-                decimal shippingCost = request.AddShippingAddress?.City?.Trim().ToLower() == "dhaka" ? 70 : 150;
+                decimal shippingCost = request.AddShippingAddress?.City?.Trim().ToLower() == "dhaka" ? 70 : 130;
                 decimal total = subTotal + shippingCost;
 
                 var order = new OrderModel
@@ -111,11 +121,17 @@ namespace ecommerce.Controllers
                     Items = group.Select(i => new Models.OrderItem
                     {
                         ProductId = i.ProductId,
+                        VariantId = i.VariantId,
                         ProductName = i.ProductName,
+                        Color = i.Color,
+                        Size = i.Size,
+                        SKU = i.SKU,
                         Price = i.Price,
                         Quantity = i.Quantity,
                         Image = i.Image,
-                        SellerId = i.SellerId
+                        SellerId = i.SellerId,
+                        SelectedAttributes = i.SelectedAttributes,
+                        Remarck = i.Remarck,
                     }).ToList(),
                     SubTotal = subTotal,
                     ShippingCost = shippingCost,
@@ -138,7 +154,7 @@ namespace ecommerce.Controllers
                 createdOrders.Add(order);
             }
 
-            // Remove ordered items from cart only if it's a CART CHECKOUT
+            // Remove ordered items from cart only if it's a cart checkout
             if (string.IsNullOrEmpty(request.ProductId))
             {
                 var cart = await _shoppingCartRepository.GetCartByUserIdAsync(userId);
@@ -225,9 +241,12 @@ namespace ecommerce.Controllers
                 {
                     ProductId = i.ProductId,
                     ProductName = i.ProductName,
+                    Color = i.Color,
+                    Size = i.Size,
                     Price = i.Price,
                     Quantity = i.Quantity,
-                    Image = i.Image
+                    Image = i.Image,
+                    Remarck = i.Remarck
                 }).ToList(),
                 SubTotal = o.SubTotal,
                 ShippingCost = o.ShippingCost,

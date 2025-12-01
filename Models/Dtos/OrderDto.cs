@@ -26,7 +26,7 @@
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public string Image { get; set; }
-        public string Remarck { get; set; }
+        public string Remark { get; set; }
     }
 
     public class ShippingAddress

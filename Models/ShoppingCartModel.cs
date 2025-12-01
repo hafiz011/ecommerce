@@ -33,6 +33,6 @@ namespace ecommerce.Models
         public string SellerId { get; set; }
         public Dictionary<string, string> SelectedAttributes { get; set; }
         = new Dictionary<string, string>();
-        public string Remarck { get; set; } // used for comment
+        public string Remark { get; set; } // used for comment
     }
 }

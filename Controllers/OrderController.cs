@@ -220,17 +220,7 @@ namespace ecommerce.Controllers
             await _orderRepository.UpdatePaymentStatusAsync(orderId, paymentStatus, transactionId);
             return Ok(new { message = "Payment updated" });
         }
-        // User gets their own orders
-        //[HttpGet("user")]
-        //public async Task<IActionResult> GetOrdersByUser()
-        //{
-        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (string.IsNullOrEmpty(userId))
-        //        return Unauthorized("User not authenticated.");
 
-        //    var orders = await _orderRepository.GetOrdersByUserAsync(userId);
-        //    return Ok(orders);
-        //}
 
         // User gets their own orders with pagination
         [HttpGet("user")]
@@ -314,33 +304,6 @@ namespace ecommerce.Controllers
             return Ok(new { message = "Status updated" });
         }
 
-        //[Authorize(Roles = "Seller")]
-        //[HttpPatch("{orderId}/status")]
-        //public async Task<IActionResult> UpdateStatus(string orderId, [FromQuery] string status)
-        //{
-        //    await _orderRepository.UpdateOrderStatusAsync(orderId, status);
-
-        //    // Add timeline entry
-        //    await _orderRepository.AddStatusTimelineAsync(orderId, new StatusTimeline
-        //    {
-        //        Status = status,
-        //        Message = $"Status changed to {status}",
-        //        UpadateAt = DateTime.UtcNow
-        //    });
-
-        //    return Ok(new { message = "Order status updated." });
-        //}
-
-        [HttpPost("{orderId}/status/add")]
-        public async Task<IActionResult> AddTimeline(string orderId, [FromBody] StatusTimeline timeline)
-        {
-            if (timeline == null) return BadRequest();
-            timeline.UpadateAt = DateTime.UtcNow;
-            await _orderRepository.AddStatusTimelineAsync(orderId, timeline);
-            return Ok(new { message = "Timeline added" });
-        }
-
-
         [Authorize(Roles = "Seller")]
         [HttpGet("orders/{id}")]
         public async Task<IActionResult> GetOrderById(string id)
@@ -351,61 +314,7 @@ namespace ecommerce.Controllers
             return Ok(order);
         }
 
-
-        //[Authorize(Roles = "Seller")]
-        //[HttpGet("seller")]
-        //public async Task<IActionResult> GetOrdersBySeller()
-        //{
-        //    var sellerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (string.IsNullOrEmpty(sellerId))
-        //        return Unauthorized("Seller not authenticated.");
-
-        //    var orders = await _orderRepository.GetOrdersBySellerAsync(sellerId);
-
-        //    if (orders == null || !orders.Any())
-        //        return NotFound("No orders found for this seller.");
-
-        //    // Map from Order model OrderDto
-        //    var orderDtos = orders.Select(o => new OrderDto
-        //    {
-        //        Id = o.Id,
-        //        Items = o.Items.Select(i => new Models.Dtos.OrderItem
-        //        {
-        //            ProductId = i.ProductId,
-        //            ProductName = i.ProductName,
-        //            Color = i.Color,
-        //            Size = i.Size,
-        //            Price = i.Price,
-        //            Quantity = i.Quantity,
-        //            Image = i.Image,
-        //            Remark = i.Remark
-        //        }).ToList(),
-        //        SubTotal = o.SubTotal,
-        //        ShippingCost = o.ShippingCost,
-        //        TotalAmount = o.TotalAmount,
-        //        PaymentMethod = o.Payment.Method,
-        //        PaymentStatus = o.Payment.Status,
-        //        OrderStatus = o.OrderStatus,
-        //        ShippingAddress = new Models.Dtos.ShippingAddress
-        //        {
-        //            FullName = o.ShippingAddress.FullName,
-        //            Phone = o.ShippingAddress.Phone,
-        //            Email = o.ShippingAddress.Email,
-        //            Address = o.ShippingAddress.Address,
-        //            City = o.ShippingAddress.City,
-        //            Country = o.ShippingAddress.Country
-        //        },
-        //        CreatedAt = o.CreatedAt,
-        //        UpdatedAt = o.UpdatedAt
-        //    }).ToList();
-
-        //    return Ok(orderDtos);
-        //}
-
-
         // dashboard stats for seller
-
-
         [Authorize(Roles = "Seller")]
         [HttpGet("dashboard")]
         public async Task<IActionResult> Dashboard([FromQuery] DateTime? from, [FromQuery] DateTime? to)
@@ -416,6 +325,19 @@ namespace ecommerce.Controllers
             var stats = await _orderRepository.GetDashboardStatsAsync(sellerId, from, to);
             return Ok(stats);
         }
+
+
+        // used curiar update
+        [HttpPost("{orderId}/status/add")]
+        public async Task<IActionResult> AddTimeline(string orderId, [FromBody] StatusTimeline timeline)
+        {
+            if (timeline == null) return BadRequest();
+            timeline.UpadateAt = DateTime.UtcNow;
+            await _orderRepository.AddStatusTimelineAsync(orderId, timeline);
+            return Ok(new { message = "Timeline added" });
+        }
+
+
 
 
 
@@ -435,6 +357,8 @@ namespace ecommerce.Controllers
             var (orders, total) = await _orderRepository.GetOrdersAsync(filter);
             return Ok(new { total, orders });
         }
+
+
     }
 
 }

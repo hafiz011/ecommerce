@@ -2,10 +2,20 @@
 {
     public class DashboardStatsDto
     {
-        public long TotalOrders { get; set; }
-        public decimal TotalRevenue { get; set; }
-        public Dictionary<string, long> OrdersByStatus { get; set; } = new();
-        public List<KeyValuePair<string, long>> OrdersPerDay { get; set; } = new(); // date string, count
-        public List<KeyValuePair<string, decimal>> RevenuePerDay { get; set; } = new();
+        public int TotalOrders { get; set; }
+        public int PendingOrders { get; set; }
+        public int ProcessingOrders { get; set; }
+        public int ShippedOrders { get; set; }
+        public int DeliveredOrders { get; set; }
+
+        public decimal TotalSales { get; set; }
+        public decimal TodaySales { get; set; }
+
+        public List<DailySalesDto> SalesChart { get; set; } = new();
+    }
+    public class DailySalesDto
+    {
+        public string Date { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
     }
 }

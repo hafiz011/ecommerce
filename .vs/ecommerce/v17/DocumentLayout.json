@@ -3,17 +3,17 @@
   "WorkspaceRootPath": "D:\\GitHub\\ecommerce\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\seller\\orders.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\pages\\seller\\dashboard.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\services\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|d:\\github\\ecommerce\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{00ED6EED-4903-4282-8061-A4BFD223E578}|ecommerce.csproj|solutionrelative:controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\services\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\models\\orderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3BC29A08-FCB1-405A-B769-4C2D5A87E274}|..\\Ecommerce.Client\\Ecommerce.Client.csproj|d:\\github\\ecommerce.client\\models\\dashboardstatsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,7 +23,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -47,54 +47,54 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "OrderDto.cs",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Models\\OrderDto.cs",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Models\\OrderDto.cs",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Models\\OrderDto.cs",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Models\\OrderDto.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAAABwAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T08:48:18.731Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "OrderService.cs",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Services\\OrderService.cs",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Services\\OrderService.cs",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Services\\OrderService.cs",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Services\\OrderService.cs",
-              "ViewState": "AgIAABUAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T08:37:51.013Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Orders.razor",
-              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Seller\\Orders.razor",
-              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Seller\\Orders.razor",
-              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Seller\\Orders.razor",
-              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Seller\\Orders.razor",
-              "ViewState": "AgIAAHwAAAAAAAAAAAAAwIEAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-01T08:36:52.762Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "OrderController.cs",
               "DocumentMoniker": "D:\\GitHub\\ecommerce\\Controllers\\OrderController.cs",
               "RelativeDocumentMoniker": "Controllers\\OrderController.cs",
               "ToolTip": "D:\\GitHub\\ecommerce\\Controllers\\OrderController.cs",
               "RelativeToolTip": "Controllers\\OrderController.cs",
-              "ViewState": "AgIAAPUAAAAAAAAAAAAAwDcBAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAADEBAAAAAAAAAADwv0ABAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T04:40:02.531Z",
+              "WhenOpened": "2025-12-02T11:35:59.347Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "OrderService.cs",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Services\\OrderService.cs",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Services\\OrderService.cs",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Services\\OrderService.cs",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Services\\OrderService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADEAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-02T11:35:59.362Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DashboardStatsDto.cs",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Models\\DashboardStatsDto.cs",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Models\\DashboardStatsDto.cs",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Models\\DashboardStatsDto.cs",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Models\\DashboardStatsDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-02T10:01:40.406Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dashboard.razor",
+              "DocumentMoniker": "D:\\GitHub\\Ecommerce.Client\\Pages\\Seller\\Dashboard.razor",
+              "RelativeDocumentMoniker": "..\\Ecommerce.Client\\Pages\\Seller\\Dashboard.razor",
+              "ToolTip": "D:\\GitHub\\Ecommerce.Client\\Pages\\Seller\\Dashboard.razor",
+              "RelativeToolTip": "..\\Ecommerce.Client\\Pages\\Seller\\Dashboard.razor",
+              "ViewState": "AgIAAGAAAAAAAAAAAAAAwG4AAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-02T07:18:11.206Z",
               "EditorCaption": ""
             }
           ]

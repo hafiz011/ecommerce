@@ -136,69 +136,44 @@ namespace ecommerce.Repositories
             await AddStatusTimelineAsync(orderId, timeline);
         }
 
-        public async Task<DashboardStatsDto> GetDashboardStatsAsync(string sellerId, DateTime? from = null, DateTime? to = null)
+        public async Task<DashboardStatsDto> GetDashboardStatsAsync(string sellerId, DateTime? from, DateTime? to)
         {
-            // default last 7 days
-            var end = to ?? DateTime.UtcNow;
-            var start = from ?? end.AddDays(-6).Date;
+            // Normalize to UTC date only
+            var start = (from ?? DateTime.UtcNow.AddMonths(-1)).Date;
+            var end = (to ?? DateTime.UtcNow).Date.AddDays(1).AddTicks(-1); // End of day
 
-            var builder = Builders<OrderModel>.Filter;
-            var f = builder.Gte(o => o.CreatedAt, start) & builder.Lte(o => o.CreatedAt, end) & builder.Eq(o => o.SellerId, sellerId);
+            var filter = Builders<OrderModel>.Filter
+                .Eq(o => o.SellerId, sellerId) &
+                Builders<OrderModel>.Filter.Gte(o => o.CreatedAt, start) &
+                Builders<OrderModel>.Filter.Lte(o => o.CreatedAt, end);
 
-            var totalOrders = await _orders.CountDocumentsAsync(f);
-            var totalRevenueAgg = await _orders.Aggregate()
-                .Match(f)
-                .Group(new BsonDocument
-                {
-                { "_id", BsonNull.Value },
-                { "totalRevenue", new BsonDocument("$sum", "$TotalAmount") }
-                }).FirstOrDefaultAsync();
+            var orders = await _orders.Find(filter).ToListAsync();
 
-            decimal totalRevenue = 0;
-            if (totalRevenueAgg != null && totalRevenueAgg.Contains("totalRevenue"))
-                totalRevenue = totalRevenueAgg["totalRevenue"].AsDecimal;
+            var today = DateTime.UtcNow.Date;
 
-            // orders by status
-            var statusAgg = await _orders.Aggregate()
-                .Match(f)
-                .Group(new BsonDocument
-                {
-                { "_id", "$OrderStatus" },
-                { "count", new BsonDocument("$sum", 1) }
-                }).ToListAsync();
-
-            var ordersByStatus = statusAgg.ToDictionary(
-                d => d["_id"].AsString,
-                d => d["count"].ToInt64());
-
-            // orders per day (last N days)
-            var perDayAgg = await _orders.Aggregate()
-                .Match(f)
-                .Project(new BsonDocument
-                {
-                { "date", new BsonDocument("$dateToString", new BsonDocument { { "format", "%Y-%m-%d" }, { "date", "$CreatedAt" } }) },
-                { "TotalAmount", "$TotalAmount" }
-                })
-                .Group(new BsonDocument
-                {
-                { "_id", "$date" },
-                { "count", new BsonDocument("$sum", 1) },
-                { "revenue", new BsonDocument("$sum", "$TotalAmount") }
-                })
-                .Sort(new BsonDocument("_id", 1))
-                .ToListAsync();
-
-            var ordersPerDay = perDayAgg.Select(d => new KeyValuePair<string, long>(d["_id"].AsString, d["count"].ToInt64())).ToList();
-            var revenuePerDay = perDayAgg.Select(d => new KeyValuePair<string, decimal>(d["_id"].AsString, d["revenue"].ToDecimal())).ToList();
-
-            return new DashboardStatsDto
+            var stats = new DashboardStatsDto
             {
-                TotalOrders = totalOrders,
-                TotalRevenue = totalRevenue,
-                OrdersByStatus = ordersByStatus,
-                OrdersPerDay = ordersPerDay,
-                RevenuePerDay = revenuePerDay
+                TotalOrders = orders.Count,
+                PendingOrders = orders.Count(o => o.OrderStatus == "Pending"),
+                ProcessingOrders = orders.Count(o => o.OrderStatus == "Processing"),
+                ShippedOrders = orders.Count(o => o.OrderStatus == "Shipped"),
+                DeliveredOrders = orders.Count(o => o.OrderStatus == "Delivered"),
+                TotalSales = orders.Sum(o => o.TotalAmount), // ← Use decimal directly!
+                TodaySales = orders
+                    .Where(o => o.CreatedAt.Date == today)
+                    .Sum(o => o.TotalAmount),
+                SalesChart = orders
+                    .GroupBy(o => o.CreatedAt.Date)
+                    .Select(g => new DailySalesDto
+                    {
+                        Date = g.Key.ToString("yyyy-MM-dd"),
+                        Amount = g.Sum(o => o.TotalAmount)
+                    })
+                    .OrderBy(x => x.Date)
+                    .ToList()
             };
+
+            return stats;
         }
 
     }

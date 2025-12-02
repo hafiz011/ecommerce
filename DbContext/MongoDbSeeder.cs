@@ -41,7 +41,7 @@ namespace ecommerce.DbContext
                     ImagePath = $"category{i}.jpg",
                     Description = $"Description for Category {i}",
                     CreatedAt = DateTime.UtcNow,
-                    SellerId = "ccd84a15-4c17-47da-9589-edca383c0117"
+                    SellerId = "4e4701f6-dc19-4d94-81d6-0836d8e6e749"
                 }).ToList();
 
             await categories.InsertManyAsync(seedCategories);
@@ -58,7 +58,7 @@ namespace ecommerce.DbContext
             var seedProducts = new List<ProductModel>();
             var now = DateTime.UtcNow;
 
-            for (int i = 1; i <= 100; i++)
+            for (int i = 1; i <= 50; i++)
             {
                 var category = categories[_rand.Next(categories.Count)];
                 var basePrice = _rand.Next(50, 2000);
@@ -130,7 +130,7 @@ namespace ecommerce.DbContext
                     Attributes = attributes,
                     Variants = variants,
                     Tags = new List<string> { "Popular", "Sale", "New" },
-                    SellerId = "ccd84a15-4c17-47da-9589-edca383c0117",
+                    SellerId = "4e4701f6-dc19-4d94-81d6-0836d8e6e749",
                     IsNew = isNew,
                     Discounts = discounts,
                     CreatedAt = now.AddDays(-_rand.Next(0, 60)),

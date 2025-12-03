@@ -99,7 +99,7 @@ builder.Services.AddSwaggerGen();
 
 //builder.Services.AddTransient<MongoDbSeeder>();
 
-
+builder.WebHost.UseUrls("http://localhost:5290");
 var app = builder.Build();
 
 //// Seed Data

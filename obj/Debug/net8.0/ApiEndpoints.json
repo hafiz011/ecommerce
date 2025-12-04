@@ -758,5 +758,84 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.SliderController",
+    "Method": "CreateSlider",
+    "RelativePath": "api/Slider/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "slider",
+        "Type": "ecommerce.Models.HeroSlider",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.SliderController",
+    "Method": "GetAllSliders",
+    "RelativePath": "api/Slider/sliders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.SliderController",
+    "Method": "GetById",
+    "RelativePath": "api/Slider/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.SliderController",
+    "Method": "UpdateSlider",
+    "RelativePath": "api/Slider/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "slider",
+        "Type": "ecommerce.Models.HeroSlider",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ecommerce.Controllers.SliderController",
+    "Method": "DeleteSlider",
+    "RelativePath": "api/Slider/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

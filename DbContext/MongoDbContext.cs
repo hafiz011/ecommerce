@@ -20,7 +20,7 @@ namespace ecommerce.DbContext
         public IMongoCollection<ProductModel> Products => _database.GetCollection<ProductModel>("Products");
         public IMongoCollection<ShoppingCartModel> ShoppingCart => _database.GetCollection<ShoppingCartModel>("Shopping_Cart");
         public IMongoCollection<OrderModel> Orders => _database.GetCollection<OrderModel>("Orders");
-        //public IMongoCollection<PaymentModel> Payments => _database.GetCollection<PaymentModel>("Payments");
+        public IMongoCollection<HeroSlider> HeroSliders => _database.GetCollection<HeroSlider>("HeroSliders");
         //public IMongoCollection<InventoryModel> Inventories => _database.GetCollection<InventoryModel>("Inventories");
         public IMongoCollection<GeolocationModel> UserGeolocation => _database.GetCollection<GeolocationModel>("User_Geolocation");
         public IMongoCollection<ActivityLogsModel> UserLogs => _database.GetCollection<ActivityLogsModel>("User_Logs");

@@ -15,10 +15,10 @@ wwwroot\images\products\bf420da3-0149-473e-9f1f-03f8b38005cc.webp
 wwwroot\images\products\dfcf6370-1ed9-4603-897b-523ad53a1067.webp
 wwwroot\images\products\ea5340ea-b8a4-481f-b6b0-89391f72fe0f.webp
 wwwroot\images\products\f503675b-f6cd-4fe7-8e66-3be19cee9954.webp
-wwwroot\images\products\bad2ebf9-afe4-4323-9946-55a362f28676.webp
-wwwroot\images\products\b8d45713-a788-4361-8fd8-fbc0c2b4c64b.webp
-wwwroot\images\products\970222f1-3ce7-48f0-b4bf-6f6a81ab8ea8.webp
-wwwroot\images\products\58ca890c-b9a5-4b6f-bd33-be738fb0a54d.webp
 wwwroot\images\products\b60701de-d907-4346-93cc-3f5ebc0c329d.webp
+wwwroot\images\products\b8d45713-a788-4361-8fd8-fbc0c2b4c64b.webp
 wwwroot\images\products\fa74c09f-8ac3-4fbd-9087-fd5fdf04fe7c.webp
 wwwroot\images\slider\82c85065-39f0-43fe-a68d-b81c100cba98.webp
+wwwroot\images\products\bad2ebf9-afe4-4323-9946-55a362f28676.webp
+wwwroot\images\products\970222f1-3ce7-48f0-b4bf-6f6a81ab8ea8.webp
+wwwroot\images\products\58ca890c-b9a5-4b6f-bd33-be738fb0a54d.webp
